@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+
+  api-server:
+    container_name: api-server
+    build: api-server
+    restart: always
+    ports:
+      - 1234:1234
+    volumes:
+      - /root/db:/var/lib/packetproxyhub
+
+  web-client:
+    container_name: web-client
+    build: web-client
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+

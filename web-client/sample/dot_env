@@ -1,0 +1,10 @@
+REACT_APP_WEB_SERVER_URL=https://packetproxyhub.example.com
+REACT_APP_API_SERVER_URL=https://packetproxyhub.example.com:1234
+
+### Google Login
+# リダイレクトURLとして ${REACT_APP_API_SERVER_URL}/login/google をGoogleに設定してください
+REACT_APP_GOOGLE_LOGIN_CLIENT_ID=xxxxxxxxxd.apps.googleusercontent.com
+
+### SAML Login (with okta)
+# リダイレクトURLとして ${REACT_APP_API_SERVER_URL}/login/okta をoktaに設定してください
+#REACT_APP_SAML_IDP_URL=https://xxxx.okta.com/app/yyyyy/sso/saml

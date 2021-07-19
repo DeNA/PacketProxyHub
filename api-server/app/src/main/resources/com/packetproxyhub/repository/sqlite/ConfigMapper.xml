@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.packetproxyhub.repository.sqlite.ConfigMapper">
+    <resultMap id="test" type="com.packetproxyhub.repository.sqlite.dao.DaoConfig">
+        <id property="dbId" column="dbId" />
+        <result property="description" column="description" />
+        <result property="packetProxyConf" column="packetProxyConf" />
+        <result property="pfConf" column="pfConf" />
+        <result property="memo" column="memo" />
+        <result property="updatedAt" column="updatedAt" />
+        <association property="id" column="id" javaType="com.packetproxyhub.repository.sqlite.dao.DaoId">
+            <result property="id" column="id" />
+        </association>
+        <association property="name" column="name" javaType="com.packetproxyhub.repository.sqlite.dao.DaoName">
+            <result property="name" column="name" />
+        </association>
+        <association property="accountId" column="accountId" javaType="com.packetproxyhub.repository.sqlite.dao.DaoId">
+            <result property="id" column="accountId" />
+        </association>
+        <association property="projectId" column="projectId" javaType="com.packetproxyhub.repository.sqlite.dao.DaoId">
+            <result property="id" column="projectId" />
+        </association>
+    </resultMap>
+    <update id="createTable">
+        CREATE TABLE IF NOT EXISTS Config (
+            dbId INTEGER UNIQUE,
+            id TEXT PRIMARY KEY,
+            name TEXT,
+            description TEXT,
+            packetProxyConf TEXT,
+            pfConf TEXT,
+            memo TEXT,
+            accountId TEXT,
+            updatedAt LONG,
+            projectId TEXT REFERENCES Project(id) ON DELETE CASCADE
+        )
+    </update>
+    <select id="selectAll" resultMap="test">
+        SELECT * FROM Config
+    </select>
+    <select id="select"
+            parameterType="com.packetproxyhub.repository.sqlite.dao.DaoId"
+            resultMap="test">
+        SELECT * FROM Config WHERE id = #{id}
+    </select>
+    <select id="selectByProjectId"
+            parameterType="com.packetproxyhub.repository.sqlite.dao.DaoId"
+            resultMap="test">
+        SELECT * FROM Config WHERE projectId = #{id}
+    </select>
+    <insert id="insert" parameterType="com.packetproxyhub.repository.sqlite.dao.DaoConfig">
+        INSERT INTO Config (
+            dbId, projectId, id, name, description, packetProxyConf, pfConf, memo, accountId, updatedAt
+        ) VALUES (
+            #{dbId}, #{projectId.id}, #{id.id}, #{name.name}, #{description}, #{packetProxyConf}, #{pfConf}, #{memo}, #{accountId.id}, #{updatedAt}
+        )
+    </insert>
+    <insert id="bulkInsert" parameterType="java.util.Set">
+        INSERT INTO Config (
+            dbId, projectId, id, name, description, packetProxyConf, pfConf, memo, accountId, updatedAt
+        ) VALUES
+        <foreach collection="daoConfigs" item="config" index="index" separator=",">
+            (#{config.dbId}, #{config.projectId.id}, #{config.id.id}, #{config.name.name}, #{config.description}, #{config.packetProxyConf}, #{config.pfConf}, #{config.memo}, #{config.accountId.id}, #{config.updatedAt})
+        </foreach>
+    </insert>
+    <insert id="bulkInsertIfNotExists" parameterType="java.util.Set">
+        INSERT OR IGNORE INTO Config (
+            dbId, projectId, id, name, description, packetProxyConf, pfConf, memo, accountId, updatedAt
+        ) VALUES
+        <foreach collection="daoConfigs" item="config" index="index" separator=",">
+            (#{config.dbId}, #{config.projectId.id}, #{config.id.id}, #{config.name.name}, #{config.description}, #{config.packetProxyConf}, #{config.pfConf}, #{config.memo}, #{config.accountId.id}, #{config.updatedAt})
+        </foreach>
+    </insert>
+    <update id="update" parameterType="com.packetproxyhub.repository.sqlite.dao.DaoConfig">
+        UPDATE Config SET
+            name = #{name.name},
+            description = #{description},
+            packetProxyConf = #{packetProxyConf},
+            pfConf = #{pfConf},
+            memo = #{memo},
+            accountId = #{accountId.id},
+            updatedAt = #{updatedAt}
+        WHERE id = #{id.id}
+    </update>
+    <delete id="delete" parameterType="com.packetproxyhub.repository.sqlite.dao.DaoId">
+        DELETE FROM Config WHERE id = #{id}
+    </delete>
+</mapper>
