@@ -1,24 +1,20 @@
 plugins {
-    // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
 }
 
 repositories {
-    // Use JCenter for resolving dependencies.
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.16'
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
 
-    // Use JUnit test framework.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
 
-    // This dependency is used by the application.
     implementation 'com.google.guava:guava:29.0-jre'
     implementation 'org.eclipse.jetty.aggregate:jetty-all:9.4.35.v20201120'
-    implementation 'com.google.inject:guice:4.2.3'
+    implementation 'com.google.inject:guice:5.0.1'
     implementation 'com.auth0:java-jwt:3.11.0'
     implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'commons-collections:commons-collections:3.2.2'
@@ -31,9 +27,9 @@ dependencies {
     implementation 'org.xerial:sqlite-jdbc:3.32.3.3'
     implementation 'com.onelogin:java-saml:2.6.0'
     implementation 'org.glassfish.jersey.core:jersey-client:3.0.0'
-    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.14.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.14.0'
-    implementation 'org.apache.logging.log4j:log4j-api:2.14.0'
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.15.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.15.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.15.0'
     implementation 'com.google.api-client:google-api-client:1.31.5'
 
 }
