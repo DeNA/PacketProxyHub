@@ -38,6 +38,16 @@ public class AppEnv {
         return "";
     }
 
+    public String getCurrentEnvMode() {
+        if (isDevelopmentEnv()) {
+            return "Development Mode";
+        }
+        if (isProductionEnv()) {
+            return "Production Mode";
+        }
+        return "Unknown Mode";
+    }
+
     public AppEnv() {
         String appEnv = System.getenv("APP_ENV");
         if (appEnv != null && appEnv.equalsIgnoreCase("production")) {

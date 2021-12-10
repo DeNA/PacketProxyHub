@@ -34,11 +34,13 @@ public class App {
     static public void main(String[] args) {
 
         logger = LoggerFactory.getLogger(App.class);
-        logger.info("PacketProxyHub API Server");
+        logger.info("Started PacketProxyHub API Server");
 
         settings = AppSettings.createFromFile(APP_SETTINGS_FILE);
-        logger.info("read setting file from " + APP_SETTINGS_FILE);
+        logger.info("Read setting file from: " + APP_SETTINGS_FILE);
+
         env = new AppEnv();
+        logger.info("Env mode: " + env.getCurrentEnvMode());
 
         // DI
         Injector injector = Guice.createInjector(new AbstractModule() {
