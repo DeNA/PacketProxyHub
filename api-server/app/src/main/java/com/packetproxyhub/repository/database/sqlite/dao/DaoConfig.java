@@ -32,6 +32,7 @@ public class DaoConfig {
     private String description;
     private String packetProxyConf;
     private String pfConf;
+    private String fridaScript;
     private String memo;
     private DaoId accountId;
     private long updatedAt;
@@ -55,6 +56,7 @@ public class DaoConfig {
         this.description = config.getDescription();
         this.packetProxyConf = config.getPacketProxyConf();
         this.pfConf = config.getPfConf();
+        this.fridaScript = config.getFridaScript();
         this.memo = config.getMemo();
         this.accountId = DaoId.create(config.getAccountId());
         this.updatedAt = config.getUpdatedAt();
@@ -62,7 +64,7 @@ public class DaoConfig {
     }
 
     public Config toConfig() {
-        return Config.create(id.toId(), name.toName(), description, packetProxyConf, pfConf, memo, accountId.toId(), updatedAt);
+        return Config.create(id.toId(), name.toName(), description, packetProxyConf, pfConf, fridaScript, memo, accountId.toId(), updatedAt);
     }
 
 }

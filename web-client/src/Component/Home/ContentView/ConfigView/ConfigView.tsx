@@ -26,6 +26,7 @@ import {DeleteConfigConfirmDialog, EditConfigDialog} from "../../Dialog";
 import {useHistory} from "react-router-dom";
 import TabBinaryView from "./TabBinaryView/TabBinaryView";
 import TabSnapshotView from "./TabSnapshotView/TabSnapshotView";
+import TabFridaScriptView from "./TabFridaScriptView/TabFridaScriptView";
 
 interface Props {
     org: Org
@@ -42,9 +43,10 @@ interface Tab {
 const tabList:Tab[] = [
     { "index": 0, "name" : "packetproxy" },
     { "index": 1, "name" : "pf" },
-    { "index": 2, "name" : "binaries" },
-    { "index": 3, "name" : "snapshots" },
-    { "index": 4, "name" : "memo" }
+    { "index": 2, "name" : "frida" },
+    { "index": 3, "name" : "binaries" },
+    { "index": 4, "name" : "snapshots" },
+    { "index": 5, "name" : "memo" }
 ]
 
 const TabNameToIndex = (name:string|undefined) : number => {
@@ -116,6 +118,12 @@ const ConfigView: React.FC<Props> = ({org, project, config, tab}) => {
                     }}
                 />
                 <Tab
+                    label="Fridaスクリプト"
+                    onClick={() => {
+                        setFocusTab(TabNameToIndex("frida"))
+                    }}
+                />
+                <Tab
                     label="バイナリ"
                     onClick={() => {
                         setFocusTab(TabNameToIndex("binaries"))
@@ -139,6 +147,9 @@ const ConfigView: React.FC<Props> = ({org, project, config, tab}) => {
             )}
             { focusTab === TabNameToIndex("pf") && config && (
                 <TabPfConfView config={config}/>
+            )}
+            { focusTab === TabNameToIndex("frida") && config && (
+                <TabFridaScriptView config={config}/>
             )}
             { focusTab === TabNameToIndex("binaries") && config && (
                 <TabBinaryView config={config}/>

@@ -54,6 +54,7 @@ public class ConfigRoute extends Route {
 
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                e.printStackTrace();
             }
         })) { return true; }
         // get all configs
@@ -70,6 +71,7 @@ public class ConfigRoute extends Route {
 
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                e.printStackTrace();
             }
         })) { return true; }
         // get the config
@@ -91,6 +93,7 @@ public class ConfigRoute extends Route {
 
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                e.printStackTrace();
             }
         })) { return true; }
 

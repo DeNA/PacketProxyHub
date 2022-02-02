@@ -25,6 +25,7 @@ export interface Config {
     description: string
     packetProxyConf: string
     pfConf: string
+    fridaScript: string
     memo: string
     accountId: string
     updatedAt?: number
@@ -38,6 +39,7 @@ export const initialConfig = {
     description: "",
     packetProxyConf: "",
     pfConf: "",
+    fridaScript: "",
     memo: "",
     accountId: "",
     updatedAt: 0,

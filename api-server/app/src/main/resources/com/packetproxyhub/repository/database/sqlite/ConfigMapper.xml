@@ -6,6 +6,7 @@
         <result property="description" column="description" />
         <result property="packetProxyConf" column="packetProxyConf" />
         <result property="pfConf" column="pfConf" />
+        <result property="fridaScript" column="fridaScript" />
         <result property="memo" column="memo" />
         <result property="updatedAt" column="updatedAt" />
         <association property="id" column="id" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
@@ -29,6 +30,7 @@
             description TEXT,
             packetProxyConf TEXT,
             pfConf TEXT,
+            fridaScript TEXT,
             memo TEXT,
             accountId TEXT,
             updatedAt LONG,
@@ -50,25 +52,25 @@
     </select>
     <insert id="insert" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoConfig">
         INSERT INTO Config (
-            dbId, projectId, id, name, description, packetProxyConf, pfConf, memo, accountId, updatedAt
+            dbId, projectId, id, name, description, packetProxyConf, pfConf, fridaScript, memo, accountId, updatedAt
         ) VALUES (
-            #{dbId}, #{projectId.id}, #{id.id}, #{name.name}, #{description}, #{packetProxyConf}, #{pfConf}, #{memo}, #{accountId.id}, #{updatedAt}
+            #{dbId}, #{projectId.id}, #{id.id}, #{name.name}, #{description}, #{packetProxyConf}, #{pfConf}, #{fridaScript}, #{memo}, #{accountId.id}, #{updatedAt}
         )
     </insert>
     <insert id="bulkInsert" parameterType="java.util.Set">
         INSERT INTO Config (
-            dbId, projectId, id, name, description, packetProxyConf, pfConf, memo, accountId, updatedAt
+            dbId, projectId, id, name, description, packetProxyConf, pfConf, fridaScript, memo, accountId, updatedAt
         ) VALUES
         <foreach collection="daoConfigs" item="config" index="index" separator=",">
-            (#{config.dbId}, #{config.projectId.id}, #{config.id.id}, #{config.name.name}, #{config.description}, #{config.packetProxyConf}, #{config.pfConf}, #{config.memo}, #{config.accountId.id}, #{config.updatedAt})
+            (#{config.dbId}, #{config.projectId.id}, #{config.id.id}, #{config.name.name}, #{config.description}, #{config.packetProxyConf}, #{config.pfConf}, #{config.fridaScript}, #{config.memo}, #{config.accountId.id}, #{config.updatedAt})
         </foreach>
     </insert>
     <insert id="bulkInsertIfNotExists" parameterType="java.util.Set">
         INSERT OR IGNORE INTO Config (
-            dbId, projectId, id, name, description, packetProxyConf, pfConf, memo, accountId, updatedAt
+            dbId, projectId, id, name, description, packetProxyConf, pfConf, fridaScript, memo, accountId, updatedAt
         ) VALUES
         <foreach collection="daoConfigs" item="config" index="index" separator=",">
-            (#{config.dbId}, #{config.projectId.id}, #{config.id.id}, #{config.name.name}, #{config.description}, #{config.packetProxyConf}, #{config.pfConf}, #{config.memo}, #{config.accountId.id}, #{config.updatedAt})
+            (#{config.dbId}, #{config.projectId.id}, #{config.id.id}, #{config.name.name}, #{config.description}, #{config.packetProxyConf}, #{config.pfConf}, #{config.fridaScript}, #{config.memo}, #{config.accountId.id}, #{config.updatedAt})
         </foreach>
     </insert>
     <update id="update" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoConfig">
@@ -77,6 +79,7 @@
             description = #{description},
             packetProxyConf = #{packetProxyConf},
             pfConf = #{pfConf},
+            fridaScript = #{fridaScript},
             memo = #{memo},
             accountId = #{accountId.id},
             updatedAt = #{updatedAt}

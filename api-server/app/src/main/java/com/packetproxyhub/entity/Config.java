@@ -35,15 +35,15 @@ public class Config implements JsonSerializer<Config>, JsonDeserializer<Config>
             setPrettyPrinting().create();
 
     static public Config create() {
-        return create(Name.create(), "", "", "", "");
+        return create(Name.create(), "", "", "", "", "");
     }
 
-    static public Config create(Name name, String description, String packetProxyConf, String pfConf, String memo) {
-        return create(Id.create(), name, description, packetProxyConf, pfConf, memo, Id.EMPTY, now());
+    static public Config create(Name name, String description, String packetProxyConf, String pfConf, String fridaScript, String memo) {
+        return create(Id.create(), name, description, packetProxyConf, pfConf, fridaScript, memo, Id.EMPTY, now());
     }
 
-    static public Config create(Id id, Name name, String description, String packetProxyConf, String pfConf, String memo, Id accountId, long updatedAt) {
-        return new Config(id, name, description, packetProxyConf, pfConf, memo, accountId, updatedAt);
+    static public Config create(Id id, Name name, String description, String packetProxyConf, String pfConf, String fridaScript, String memo, Id accountId, long updatedAt) {
+        return new Config(id, name, description, packetProxyConf, pfConf, fridaScript, memo, accountId, updatedAt);
     }
 
     static public Config createFromJson(String json) {
@@ -59,23 +59,25 @@ public class Config implements JsonSerializer<Config>, JsonDeserializer<Config>
     private String description;
     private String packetProxyConf;
     private String pfConf;
+    private String fridaScript;
     private String memo;
     private Id accountId;
     private long updatedAt;
 
-    private Config(Id id, Name name, String description, String packetProxyConf, String pfConf, String memo, Id accountId, long updatedAt) {
+    private Config(Id id, Name name, String description, String packetProxyConf, String pfConf, String fridaScript, String memo, Id accountId, long updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.packetProxyConf = packetProxyConf;
         this.pfConf = pfConf;
+        this.fridaScript = fridaScript;
         this.memo = memo;
         this.accountId = accountId;
         this.updatedAt = updatedAt;
     }
 
     public Config updatedBy(Id accountId) {
-        return Config.create(id, name, description, packetProxyConf, pfConf, memo, accountId, now());
+        return Config.create(id, name, description, packetProxyConf, pfConf, fridaScript, memo, accountId, now());
     }
 
     public boolean equalsId(Id id) {
@@ -90,6 +92,7 @@ public class Config implements JsonSerializer<Config>, JsonDeserializer<Config>
         result.add("description", new JsonPrimitive(src.description));
         result.add("packetProxyConf", new JsonPrimitive(src.packetProxyConf));
         result.add("pfConf", new JsonPrimitive(src.pfConf));
+        result.add("fridaScript", new JsonPrimitive(src.fridaScript));
         result.add("memo", new JsonPrimitive(src.memo));
         result.add("accountId", src.accountId.serialize(src.accountId, Id.class, context));
         result.add("updatedAt", new JsonPrimitive(src.updatedAt));
@@ -104,10 +107,11 @@ public class Config implements JsonSerializer<Config>, JsonDeserializer<Config>
         String description = jsonObject.get("description") != null ? jsonObject.get("description").getAsString() : "";
         String packetProxyConf = jsonObject.get("packetProxyConf") != null ? jsonObject.get("packetProxyConf").getAsString() : "";
         String pfConf = jsonObject.get("pfConf") != null ? jsonObject.get("pfConf").getAsString() : "";
+        String fridaScript = jsonObject.get("fridaScript") != null ? jsonObject.get("fridaScript").getAsString() : "";
         String memo = jsonObject.get("memo") != null ? jsonObject.get("memo").getAsString() : "";
         Id accountId = Id.create().deserialize(jsonObject.get("accountId"), Id.class, context);
         long updatedAt = jsonObject.get("updatedAt") != null ? jsonObject.get("updatedAt").getAsLong() : now();
-        return new Config(id, name, description, packetProxyConf, pfConf, memo, accountId, updatedAt);
+        return new Config(id, name, description, packetProxyConf, pfConf, fridaScript, memo, accountId, updatedAt);
     }
 
     public String toJson() {
