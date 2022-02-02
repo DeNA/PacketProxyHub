@@ -1,0 +1,69 @@
+#!/usr/bin/env ruby
+
+require 'snapshot/avd/avd'
+
+def usage
+  puts "Usage: snapshot [list|create|extract FILE|start]"
+  puts "create/extract AVD snapshot file"
+  puts ""
+  puts "   list:          show AVDs and snapshots in each avd"
+  puts "   create:        create a snapshot file for uploading PacketProxyHub"
+  puts "   extract FILE:  extract specified snapshot file into $HOME/.android/avd"
+  puts "   start:         start android-emulator for debugging"
+  puts ""
+end
+
+def choice_avd
+  avd_names = Avd.list_avd
+  avd_names.each_with_index do |avd_name, index|
+    puts "[AVD #{index}] #{avd_name}"
+  end
+  print "AVD number[0-#{avd_names.size-1}]: "
+  num = STDIN.gets.chomp.to_i
+  Avd.new(avd_names[num])
+end
+
+if ARGV.length == 0
+  usage()
+  exit(1)
+end
+
+if ARGV[0] == 'list'
+  avd_names = Avd.list_avd
+  avd_names.each_with_index do |avd_name, index|
+    puts "[AVD #{index}] #{avd_name}"
+    avd = Avd.new(avd_name)
+    avd.snaps.each_with_index do |snap, snap_no|
+      desc = "(#{snap.meta.description})" if !snap.meta.description.empty?
+      puts "    [Snapshot #{snap_no}] #{snap.meta.name} #{desc}"
+    end
+  end
+end
+
+if ARGV[0] == 'create'
+  avd = choice_avd
+  avd.snaps.each_with_index do |snap, snap_no|
+    desc = "(#{snap.meta.description})" if !snap.meta.description.empty?
+    puts "    [Snapshot #{snap_no}] #{snap.meta.name} #{desc}"
+  end
+  print "Snapshot number[0-#{avd.snaps.size-1}]: "
+  num = STDIN.gets.chomp.to_i
+  print "New AVD name: "
+  new_avd_name = STDIN.gets.chomp
+  puts "Creating PacketProxyHub Snapshot image... take a few minutes to create."
+  avd.create_binary(avd.snaps[num].name, new_avd_name)
+end
+
+if ARGV[0] == 'extract'
+  if ARGV[1].nil? || ARGV[1].empty?
+    usage()
+    exit(1)
+  end
+  Avd.extract_binary(ARGV[1])
+end
+
+if ARGV[0] == 'start'
+  avd = choice_avd
+  puts "booting #{avd.name}..."
+  system("nohup #{Dir.home}/Library/Android/sdk/emulator/emulator -netdelay none -netspeed full -avd #{avd.name} > /dev/null &")
+end
