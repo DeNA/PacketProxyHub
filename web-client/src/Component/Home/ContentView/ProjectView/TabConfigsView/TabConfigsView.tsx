@@ -95,7 +95,7 @@ const TabConfigsView : React.FC<Props> = ({project}) => {
                                         <TableRow key={config.id}>
                                             <TableCell>
                                                 <IconText
-                                                    icon={<SettingsApplications style={{color:purple[500],margin:"0 0.3em 0 0"}}/>}
+                                                    icon={<SettingsApplications style={{color:purple[500]}}/>}
                                                     text={
                                                         <Link
                                                             href="#"

@@ -40,7 +40,7 @@ const ContentOrgProjectsView : React.FC<Props> = ({project}) => {
         <TableRow key={project.id}>
             <TableCell>
                 <IconText
-                    icon={<Book color="primary" style={{margin:"0 0.3em 0 0"}}/>}
+                    icon={<Book color="primary" />}
                     text={
                         <Link
                             color="inherit"

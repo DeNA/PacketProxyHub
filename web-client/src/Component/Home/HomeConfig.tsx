@@ -35,9 +35,10 @@ interface Props {
     orgName: string
     projectName: string
     configName: string
+    configTabName?: string
 }
 
-const HomeConfig : React.FC<Props> = ({orgName, projectName, configName}) => {
+const HomeConfig : React.FC<Props> = ({orgName, projectName, configName, configTabName}) => {
 
     const org : Org|undefined = useSelector((state: RootState) => {
         return selectOrgByName(state, orgName)
@@ -89,7 +90,7 @@ const HomeConfig : React.FC<Props> = ({orgName, projectName, configName}) => {
         <div>
             { config && (
                 <SplitView selectedId={config.id}>
-                    <ConfigView config={config}/>
+                    <ConfigView org={org!} project={project!} config={config} tab={configTabName} />
                 </SplitView>
             )}
             { !config && (

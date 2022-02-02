@@ -31,7 +31,6 @@ const customTheme = createMuiTheme({
         }
     },
     palette: {
-        // primary: blue
         primary: {
             main: blue[300]
         }

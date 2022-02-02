@@ -38,13 +38,13 @@ const OrgMemberTableRow : React.FC<Props> = ({orgMember}) => {
         <TableRow key={orgMember.id}>
             <TableCell>
                 <IconText
-                    icon={<Person color="primary" style={{margin:"0 0.3em 0 0"}}/>}
+                    icon={<Person color="primary" />}
                     text={<Link color="inherit"><AccountName orgMember={orgMember} /></Link>}
                 />
             </TableCell>
             <TableCell>
                 <IconText
-                    icon={<Mail color="primary" style={{margin:"0 0.3em 0 0"}}/>}
+                    icon={<Mail color="primary" />}
                     text={<Link color="inherit"><AccountMail orgMember={orgMember} /></Link>}
                 />
             </TableCell>

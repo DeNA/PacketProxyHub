@@ -21,7 +21,6 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.lang.reflect.Type;
-import java.util.Date;
 import java.util.UUID;
 
 @Getter

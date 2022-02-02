@@ -24,9 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 
-// Everything Endpoints
 // GET /all (get all resources)
-// GET /orgs/123/all (get all of the org)
 
 public class ResourceRoute extends Route {
     @Inject
@@ -44,6 +42,10 @@ public class ResourceRoute extends Route {
                 response.setStatus(HttpServletResponse.SC_OK);
                 replyResponseAsJson(response, resource.toJson());
 
+            } catch (IllegalAccessException e) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                LoginRoute.resetCookie(response);
+
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 e.printStackTrace();
@@ -52,5 +54,4 @@ public class ResourceRoute extends Route {
 
         return false;
     }
-
 }

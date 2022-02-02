@@ -33,6 +33,7 @@ public class Resource implements JsonSerializer<Resource> {
             registerTypeAdapter(Projects.class, Projects.create()).
             registerTypeAdapter(Configs.class, Configs.create()).
             registerTypeAdapter(OrgMembers.class, OrgMembers.create()).
+            registerTypeAdapter(Binaries.class, Binaries.create()).
             registerTypeAdapter(Id.class, Id.create()).
             registerTypeAdapter(Name.class, Name.create()).
             setPrettyPrinting().
@@ -45,12 +46,16 @@ public class Resource implements JsonSerializer<Resource> {
     @Data @AllArgsConstructor static class StProject { Id orgId; Projects projects; }
     @Data @AllArgsConstructor static class StConfig { Id orgId; Id projectId; Configs configs; }
     @Data @AllArgsConstructor static class StOrgMember { Id orgId; OrgMembers orgMembers; }
+    @Data @AllArgsConstructor static class StBinary { Id orgId; Id projectId; Id configId; Binaries binaries; }
+    @Data @AllArgsConstructor static class StSnapshot { Id orgId; Id projectId; Id configId; Snapshots snapshots; }
 
     Accounts accounts = Accounts.create();
     Orgs orgs = Orgs.create();
     Set<StProject> projectSet = new HashSet<>();
     Set<StConfig> configSet = new HashSet<>();
     Set<StOrgMember> orgMemberSet = new HashSet<>();
+    Set<StBinary> binarySet = new HashSet<>();
+    Set<StSnapshot> snapshotSet = new HashSet<>();
 
     private Resource() {
     }
@@ -75,6 +80,14 @@ public class Resource implements JsonSerializer<Resource> {
         this.orgMemberSet.add(new StOrgMember(orgId, orgMembers));
     }
 
+    public void addBinaries(Id orgId, Id projectId, Id configId, Binaries binaries) {
+        this.binarySet.add(new StBinary(orgId, projectId, configId, binaries));
+    }
+
+    public void addSnapshots(Id orgId, Id projectId, Id configId, Snapshots snapshots) {
+        this.snapshotSet.add(new StSnapshot(orgId, projectId, configId, snapshots));
+    }
+
     @Override
     public JsonElement serialize(Resource src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject result = new JsonObject();
@@ -84,6 +97,8 @@ public class Resource implements JsonSerializer<Resource> {
         result.add("projects", getJsonProjects(src, context));
         result.add("configs", getJsonConfigs(src, context));
         result.add("orgMembers", getJsonOrgMembers(src, context));
+        result.add("binaries", getJsonBinaries(src, context));
+        result.add("snapshots", getJsonSnapshots(src, context));
 
         return result;
     }
@@ -117,6 +132,32 @@ public class Resource implements JsonSerializer<Resource> {
             JsonObject projectJO = new JsonObject();
             projectJO.add("orgId", stOrgMember.getOrgId().serialize(stOrgMember.getOrgId(), Id.class, context));
             projectJO.add("orgMembers", stOrgMember.getOrgMembers().serialize(stOrgMember.getOrgMembers(), OrgMembers.class, context));
+            array.add(projectJO);
+        });
+        return array;
+    }
+
+    private JsonArray getJsonBinaries(Resource src, JsonSerializationContext context) {
+        JsonArray array = new JsonArray();
+        src.binarySet.forEach(stBinary -> {
+            JsonObject projectJO = new JsonObject();
+            projectJO.add("orgId", stBinary.getOrgId().serialize(stBinary.getOrgId(), Id.class, context));
+            projectJO.add("projectId", stBinary.getProjectId().serialize(stBinary.getProjectId(), Id.class, context));
+            projectJO.add("configId", stBinary.getConfigId().serialize(stBinary.getConfigId(), Id.class, context));
+            projectJO.add("binaries", stBinary.getBinaries().serialize(stBinary.getBinaries(), Binaries.class, context));
+            array.add(projectJO);
+        });
+        return array;
+    }
+
+    private JsonArray getJsonSnapshots(Resource src, JsonSerializationContext context) {
+        JsonArray array = new JsonArray();
+        src.snapshotSet.forEach(stSnapshot -> {
+            JsonObject projectJO = new JsonObject();
+            projectJO.add("orgId", stSnapshot.getOrgId().serialize(stSnapshot.getOrgId(), Id.class, context));
+            projectJO.add("projectId", stSnapshot.getProjectId().serialize(stSnapshot.getProjectId(), Id.class, context));
+            projectJO.add("configId", stSnapshot.getConfigId().serialize(stSnapshot.getConfigId(), Id.class, context));
+            projectJO.add("snapshots", stSnapshot.getSnapshots().serialize(stSnapshot.getSnapshots(), Snapshots.class, context));
             array.add(projectJO);
         });
         return array;

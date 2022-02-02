@@ -68,6 +68,8 @@ import {
     treeOpenStatesAdd,
 } from "./Slice/TreeOpenState"
 import {Dispatch} from "react";
+import {Binary, initialBinary, binariesReset, binariesSelectors, binariesRemove, binariesSync, binariesUpsert} from "./Slice/Binary";
+import {Snapshot, initialSnapshot, snapshotsReset, snapshotsSelectors, snapshotsRemove, snapshotsSync, snapshotsUpsert} from "./Slice/Snapshot";
 
 export const resetRedux = (dispatch: Dispatch<any>) => {
     dispatch(meReset())
@@ -78,6 +80,8 @@ export const resetRedux = (dispatch: Dispatch<any>) => {
     dispatch(orgsReset())
     dispatch(projectsReset())
     dispatch(treeOpenStatesReset())
+    dispatch(binariesReset())
+    dispatch(snapshotsReset())
 }
 
 export type {
@@ -86,6 +90,8 @@ export type {
     Project,
     Config,
     OrgMember,
+    Binary,
+    Snapshot,
     TreeOpenState,
 }
 
@@ -93,6 +99,8 @@ export {
     initialProject,
     initialConfig,
     initialOrgMember,
+    initialBinary,
+    initialSnapshot,
     initialTreeOpenState,
 }
 
@@ -104,6 +112,8 @@ export {
     orgMembersReset,
     orgsReset,
     projectsReset,
+    binariesReset,
+    snapshotsReset,
     treeOpenStatesReset,
 }
 
@@ -113,6 +123,8 @@ export {
     projectsSelectors,
     configsSelectors,
     orgMembersSelectors,
+    binariesSelectors,
+    snapshotsSelectors,
     treeOpenStatesSelectors,
 }
 
@@ -143,6 +155,12 @@ export {
     orgMembersUpsert,
     orgMemberUpdate,
     orgMembersSync,
+    binariesUpsert,
+    binariesRemove,
+    binariesSync,
+    snapshotsUpsert,
+    snapshotsRemove,
+    snapshotsSync,
     treeOpenStateUpdate,
     treeOpenStatesUpsert,
     treeOpenStatesDelete,

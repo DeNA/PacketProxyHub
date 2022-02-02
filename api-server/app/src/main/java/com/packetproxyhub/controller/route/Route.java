@@ -20,11 +20,14 @@ import com.packetproxyhub.entity.Account;
 import com.packetproxyhub.entity.Id;
 import com.packetproxyhub.entity.SessionKey;
 import com.packetproxyhub.interactor.IAccountService;
+import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.uri.UriTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,4 +87,9 @@ abstract class Route {
         response.getWriter().println(json);
     }
 
+    protected void replyResponseAsBinary(HttpServletResponse response, InputStream in) throws Exception {
+        response.setContentType("application/octet-stream");
+        OutputStream out = response.getOutputStream();
+        IOUtils.copy(in, out);
+    }
 }

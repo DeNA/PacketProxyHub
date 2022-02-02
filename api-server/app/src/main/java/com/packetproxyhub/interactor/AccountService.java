@@ -51,7 +51,10 @@ public class AccountService implements IAccountService
 
     public Account findAccountBy(SessionKey sessionKey) throws Exception {
         Id accountId = SessionContext.createFromSessionKey(sessionKey).getAccountId();
-        return repository.getAccount(accountId);
+        Account account = repository.getAccount(accountId);
+        if (account == null)
+            throw new IllegalAccessException();
+        return account;
     }
 
     @Override

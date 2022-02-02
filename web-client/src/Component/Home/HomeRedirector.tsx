@@ -24,9 +24,10 @@ interface Props {
     orgId: string
     projectId?: string
     configId?: string
+    configTabName?: string
 }
 
-const HomeRedirector : React.FC<Props> = ({orgId, projectId= "", configId = ""}) => {
+const HomeRedirector : React.FC<Props> = ({orgId, projectId= "", configId = "", configTabName}) => {
 
     let path = "";
 
@@ -47,6 +48,9 @@ const HomeRedirector : React.FC<Props> = ({orgId, projectId= "", configId = ""})
     })
     if (config)
         path = `${path}/${encodeURIComponent(config.name)}`
+
+    if (configTabName)
+        path = `${path}/${encodeURIComponent(configTabName)}`
 
     return (
         <Redirect to={path} />

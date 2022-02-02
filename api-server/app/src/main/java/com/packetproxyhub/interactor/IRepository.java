@@ -53,4 +53,15 @@ public interface IRepository {
     void removeConfigFromProject(Id projectId, Id configId);
     void updateConfig(Id projectId, Config config);
 
+    Ids listBinariesInConfig(Id configId);
+    Binary getBinary(Id binaryId);
+    Id insertBinaryToConfig(Id configId, Binary binary);
+    void removeBinaryFromConfig(Id configId, Id binaryId);
+    void updateBinary(Id configId, Binary binary);
+
+    Ids listSnapshotsInConfig(Id configId);
+    Snapshot getSnapshot(Id snapshotId);
+    Id insertSnapshotToConfig(Id configId, Snapshot snapshot);
+    void removeSnapshotFromConfig(Id configId, Id snapshotId);
+    void updateSnapshot(Id configId, Snapshot snapshot);
 }

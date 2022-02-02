@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.packetproxyhub.repository.database.sqlite.SnapshotMapper">
+    <resultMap id="test" type="com.packetproxyhub.repository.database.sqlite.dao.DaoSnapshot">
+        <id property="dbId" column="dbId" />
+        <result property="description" column="description" />
+        <result property="uploadedAt" column="uploadedAt" />
+        <association property="id" column="id" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+            <result property="id" column="id" />
+        </association>
+        <association property="name" column="name" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoName">
+            <result property="name" column="name" />
+        </association>
+        <association property="fileId" column="fileId" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+            <result property="id" column="fileId" />
+        </association>
+        <association property="screenshotId" column="screenshotId" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+            <result property="id" column="screenshotId" />
+        </association>
+        <association property="uploadedBy" column="uploadedBy" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+            <result property="id" column="uploadedBy" />
+        </association>
+        <association property="configId" column="configId" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+            <result property="id" column="configId" />
+        </association>
+    </resultMap>
+    <update id="createTable">
+        CREATE TABLE IF NOT EXISTS Snapshot (
+            dbId INTEGER UNIQUE,
+            id TEXT PRIMARY KEY,
+            name TEXT,
+            description TEXT,
+            fileId TEXT,
+            screenshotId TEXT,
+            uploadedBy TEXT,
+            uploadedAt LONG,
+            configId TEXT REFERENCES Config(id) ON DELETE CASCADE
+        )
+    </update>
+    <select id="selectAll" resultMap="test">
+        SELECT * FROM Snapshot
+    </select>
+    <select id="select"
+            parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoId"
+            resultMap="test">
+        SELECT * FROM Snapshot WHERE id = #{id}
+    </select>
+    <select id="selectByConfigId"
+            parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoId"
+            resultMap="test">
+        SELECT * FROM Snapshot WHERE configId = #{id}
+    </select>
+    <insert id="insert" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoSnapshot">
+        INSERT INTO Snapshot (
+            dbId, configId, id, name, description, fileId, screenshotId, uploadedBy, uploadedAt
+        ) VALUES (
+            #{dbId}, #{configId.id}, #{id.id}, #{name.name}, #{description}, #{fileId.id}, #{screenshotId.id}, #{uploadedBy.id}, #{uploadedAt}
+        )
+    </insert>
+    <insert id="bulkInsert" parameterType="java.util.Set">
+        INSERT INTO Snapshot (
+            dbId, configId, id, name, description, fileId, screenshotId, uploadedBy, uploadedAt
+        ) VALUES
+        <foreach collection="daoSnapshots" item="snapshot" index="index" separator=",">
+            (#{snapshot.dbId}, #{snapshot.configId.id}, #{snapshot.id.id}, #{snapshot.name.name}, #{snapshot.description}, #{snapshot.fileId.id}, #{snapshot.screenshotId.id}, #{snapshot.uploadedBy.id}, #{snapshot.uploadedAt})
+        </foreach>
+    </insert>
+    <insert id="bulkInsertIfNotExists" parameterType="java.util.Set">
+        INSERT OR IGNORE INTO Snapshot (
+            dbId, projectId, id, name, description, fileId, screenshotId, uploadedBy, uploadedAt
+        ) VALUES
+        <foreach collection="daoSnapshots" item="snapshot" index="index" separator=",">
+            (#{snapshot.dbId}, #{snapshot.configId.id}, #{snapshot.id.id}, #{snapshot.name.name}, #{snapshot.description}, #{snapshot.fileId.id}, #{snapshot.screenshotId.id}, #{snapshot.uploadedBy.id}, #{snapshot.uploadedAt})
+        </foreach>
+    </insert>
+    <update id="update" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoSnapshot">
+        UPDATE Snapshot SET
+            name = #{name.name},
+            description = #{description},
+            fileId = #{fileId.id},
+            screenshotId = #{screenshotId.id},
+            uploadedBy = #{uploadedBy.id},
+            uploadedAt = #{uploadedAt}
+        WHERE id = #{id.id}
+    </update>
+    <delete id="delete" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+        DELETE FROM Snapshot WHERE id = #{id}
+    </delete>
+</mapper>

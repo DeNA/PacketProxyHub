@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.packetproxyhub.repository.database.sqlite.OrgMapper">
+    <resultMap id="test" type="com.packetproxyhub.repository.database.sqlite.dao.DaoOrg">
+        <id property="dbId" column="dbId" />
+        <result property="description" column="description" />
+        <association property="id" column="id" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+            <result property="id" column="id" />
+        </association>
+        <association property="name" column="name" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoName">
+            <result property="name" column="name" />
+        </association>
+    </resultMap>
+    <insert id="createTable">
+        CREATE TABLE IF NOT EXISTS Org (
+            dbId INTEGER UNIQUE,
+            id TEXT PRIMARY KEY,
+            name TEXT UNIQUE,
+            description TEXT
+        )
+    </insert>
+    <select id="selectById"
+            parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoId"
+            resultMap="test">
+        SELECT * FROM Org WHERE id = #{id}
+    </select>
+    <select id="selectByName"
+            parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoName"
+            resultMap="test">
+        SELECT * FROM Org WHERE name = #{name}
+    </select>
+    <insert id="insert" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoOrg">
+        INSERT INTO Org (dbId, id, name, description) VALUES (#{dbId}, #{id.id}, #{name.name}, #{description})
+    </insert>
+    <delete id="delete" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+        DELETE FROM Org WHERE id = #{id}
+    </delete>
+    <update id="update" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoOrg">
+        UPDATE Org SET
+            name = #{name.name},
+            description = #{description}
+        WHERE id = #{id.id}
+    </update>
+</mapper>

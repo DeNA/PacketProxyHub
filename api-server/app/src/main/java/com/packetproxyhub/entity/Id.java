@@ -78,5 +78,4 @@ public class Id implements JsonSerializer<Id>, JsonDeserializer<Id>
     public long toLong() {
         return id.getLeastSignificantBits();
     }
-
 }

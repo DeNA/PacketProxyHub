@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import React, {useState} from "react"
-import {Config} from "../../../../Redux";
+import React, {useEffect, useState} from "react"
+import {Config, Org, Project} from "../../../../Redux";
 import {IconButton, Tab, Tabs, Typography} from "@material-ui/core";
 import {Delete, Edit, SettingsApplications} from "@material-ui/icons";
 import {blue, purple} from "@material-ui/core/colors";
@@ -24,18 +24,59 @@ import TabPfConfView from "./TabPfConfView/TabPfConfView";
 import TabMemoView from "./TabMemoView/TabMemoView";
 import {DeleteConfigConfirmDialog, EditConfigDialog} from "../../Dialog";
 import {useHistory} from "react-router-dom";
+import TabBinaryView from "./TabBinaryView/TabBinaryView";
+import TabSnapshotView from "./TabSnapshotView/TabSnapshotView";
 
 interface Props {
+    org: Org
+    project: Project
     config: Config
+    tab?: string
 }
 
-const ConfigView: React.FC<Props> = ({config}) => {
+interface Tab {
+    index: number
+    name: string
+}
 
-    const [focusTab, setFocusTab] = useState(0)
+const tabList:Tab[] = [
+    { "index": 0, "name" : "packetproxy" },
+    { "index": 1, "name" : "pf" },
+    { "index": 2, "name" : "binaries" },
+    { "index": 3, "name" : "snapshots" },
+    { "index": 4, "name" : "memo" }
+]
+
+const TabNameToIndex = (name:string|undefined) : number => {
+    if (name === undefined) {
+        return 0
+    }
+    const tab:Tab|undefined = tabList.find((tab:Tab) => tab.name === name)
+    if (tab === undefined) {
+        return 0
+    }
+    return tab.index
+}
+
+const IndexToTabName = (index:number) : string => {
+    const tab:Tab|undefined = tabList.find((tab:Tab) => tab.index === index)
+    if (tab === undefined) {
+        return "packetproxy"
+    }
+    return tab.name
+}
+
+const ConfigView: React.FC<Props> = ({org, project, config, tab}) => {
+
+    const [focusTab, setFocusTab] = useState(TabNameToIndex(tab))
     const [openEditDlgState, setOpenEditDlgState] = useState(false)
     const [openDelteDlgState, setOpenDeleteDlgState] = useState(false)
 
     const history = useHistory()
+
+    useEffect(() => {
+        history.replace(`/${org.name}/${project.name}/${config.name}/${IndexToTabName(focusTab)}`)
+    }, [history, org, project, config, focusTab, tab])
 
     return (
         <div>
@@ -64,24 +105,48 @@ const ConfigView: React.FC<Props> = ({config}) => {
             >
                 <Tab
                     label="PacketProxy 設定"
-                    onClick={() => {setFocusTab(0)}}
+                    onClick={() => {
+                        setFocusTab(TabNameToIndex("packetproxy"))
+                    }}
                 />
                 <Tab
                     label="pf.conf 設定"
-                    onClick={() => {setFocusTab(1)}}
+                    onClick={() => {
+                        setFocusTab(TabNameToIndex("pf"))
+                    }}
+                />
+                <Tab
+                    label="バイナリ"
+                    onClick={() => {
+                        setFocusTab(TabNameToIndex("binaries"))
+                    }}
+                />
+                <Tab
+                    label="スナップショット"
+                    onClick={() => {
+                        setFocusTab(TabNameToIndex("snapshots"))
+                    }}
                 />
                 <Tab
                     label="メモ"
-                    onClick={() => {setFocusTab(2)}}
+                    onClick={() => {
+                        setFocusTab(TabNameToIndex("memo"))
+                    }}
                 />
             </Tabs>
-            { focusTab === 0 && config && (
+            { focusTab === TabNameToIndex("packetproxy") && config && (
                 <TabPacketProxyConfView config={config}/>
             )}
-            { focusTab === 1 && config && (
+            { focusTab === TabNameToIndex("pf") && config && (
                 <TabPfConfView config={config}/>
             )}
-            { focusTab === 2 && config && (
+            { focusTab === TabNameToIndex("binaries") && config && (
+                <TabBinaryView config={config}/>
+            )}
+            { focusTab === TabNameToIndex("snapshots") && config && (
+                <TabSnapshotView config={config}/>
+            )}
+            { focusTab === TabNameToIndex("memo") && config && (
                 <TabMemoView config={config}/>
             )}
             <EditConfigDialog

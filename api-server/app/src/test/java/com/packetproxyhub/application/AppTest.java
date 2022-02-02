@@ -21,9 +21,13 @@ package com.packetproxyhub.application;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.packetproxyhub.entity.*;
-import com.packetproxyhub.repository.sqlite.SqliteRepository;
+import com.packetproxyhub.repository.database.sqlite.SqliteRepository;
+import com.packetproxyhub.repository.filesystem.unix.UnixFilesystem;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -31,7 +35,7 @@ import java.util.UUID;
 import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
+//@Disabled
 public class AppTest {
     static Thread server;
 
@@ -261,6 +265,116 @@ public class AppTest {
         }
     }
 
+    @Nested
+    class ファイルアップロードダウンロードに関するテスト {
+        private Id orgId;
+
+        @BeforeEach
+        public void setup() throws Exception {
+            login("upload.test", "upload.test@example.com");
+            orgId = createOrg("{}");
+        }
+
+        @Test
+        public void テキストをアップロードしてダウンロードできること() throws Exception {
+            byte[] input = "aaa".getBytes(StandardCharsets.UTF_8);
+            Id fileId = uploadFile(orgId, input);
+            byte[] output = downloadFile(orgId, fileId);
+            assertArrayEquals(input, output);
+        }
+
+        @Test
+        public void バイナリをアップロードしてダウンロードできること() throws Exception {
+            byte[] input = Hex.decodeHex("11223344556677889900aabbccddeeff");
+            Id fileId = uploadFile(orgId, input);
+            byte[] output = downloadFile(orgId, fileId);
+            assertArrayEquals(input, output);
+        }
+
+        @Test
+        public void マルチアップロードのテスト() throws Exception {
+            byte[] input = Hex.decodeHex("11223344556677889900aabbccddeeff");
+            Id fileId = multiUploadFile(orgId, input);
+            byte[] output = downloadFile(orgId, fileId);
+            assertArrayEquals(input, output);
+        }
+    }
+
+    @Nested
+    class バイナリに関するテスト {
+        private Id orgId;
+        private Id projectId;
+        private Id configId;
+
+        @BeforeEach
+        public void setup() throws Exception {
+            login("binary.test", "binary.test@example.com");
+            orgId = createOrg("{}");
+            projectId = createProject(orgId, "{ \"name\": \"binary\"}" );
+            configId = createConfig(orgId, projectId, "{ \"name\": \"binary\", \"memo\": \"memo\" }" );
+        }
+
+        @Test
+        public void バイナリを保存できること() throws Exception {
+            Id binaryId = createBinary(orgId, projectId, configId, "{ \"name\": \"create.binary\", \"description\": \"desc\", \"fileId\": \"9ab940fa-9f47-4fb6-af69-d89cb0a01d38\" }");
+            Binary binary = getBinary(orgId, projectId, configId, binaryId);
+            assertEquals("desc", binary.getDescription());
+        }
+
+        @Test
+        public void バイナリを削除できること() throws Exception {
+            Id binaryId = createBinary(orgId, projectId, configId, "{ \"name\": \"delete.binary\", \"description\": \"desc\", \"fileId\": \"9ab940fa-9f47-4fb6-af69-d89cb0a01d38\" }" );
+            deleteBinary(orgId, projectId, configId, binaryId);
+            assertThrows(Exception.class, () -> getBinary(orgId, projectId, configId, binaryId));
+        }
+
+        @Test
+        public void バイナリを更新できること() throws Exception {
+            Id binaryId = createBinary(orgId, projectId, configId, "{ \"name\": \"edit.binary\", \"description\": \"desc\", \"fileId\": \"9ab940fa-9f47-4fb6-af69-d89cb0a01d38\" }" );
+            updateBinary(orgId, projectId, configId, binaryId, String.format("{ \"id\": %s, \"name\": \"edit.binary\", \"description\": \"edited\", \"fileId\": \"9ab940fa-9f47-4fb6-af69-d89cb0a01d38\" }", binaryId));
+            Binary binary = getBinary(orgId, projectId, configId, binaryId);
+            assertEquals("edited", binary.getDescription());
+        }
+    }
+
+    @Nested
+    class スナップショットに関するテスト {
+        private Id orgId;
+        private Id projectId;
+        private Id configId;
+
+        @BeforeEach
+        public void setup() throws Exception {
+            login("snapshot.test", "snapshot.test@example.com");
+            orgId = createOrg("{}");
+            projectId = createProject(orgId, "{ \"name\": \"snapshot\"}" );
+            configId = createConfig(orgId, projectId, "{ \"name\": \"snapshot\", \"memo\": \"memo\" }" );
+        }
+
+        @Test
+        public void スナップショットを保存できること() throws Exception {
+            Id snapshotId = createSnapshot(orgId, projectId, configId, "{ \"name\": \"create.snapshot\", \"description\": \"desc\", \"fileId\": \"9ab940fa-9f47-4fb6-af69-d89cb0a01d38\" }");
+            Snapshot snapshot = getSnapshot(orgId, projectId, configId, snapshotId);
+            assertEquals("desc", snapshot.getDescription());
+        }
+
+        @Test
+        public void スナップショットを削除できること() throws Exception {
+            Id snapshotId = createSnapshot(orgId, projectId, configId, "{ \"name\": \"delete.snapshot\", \"description\": \"desc\", \"fileId\": \"9ab940fa-9f47-4fb6-af69-d89cb0a01d38\" }" );
+            deleteSnapshot(orgId, projectId, configId, snapshotId);
+            assertThrows(Exception.class, () -> getSnapshot(orgId, projectId, configId, snapshotId));
+        }
+
+        @Test
+        public void スナップショットを更新できること() throws Exception {
+            Id snapshotId = createSnapshot(orgId, projectId, configId, "{ \"name\": \"edit.snapshot\", \"description\": \"desc\", \"fileId\": \"9ab940fa-9f47-4fb6-af69-d89cb0a01d38\" }" );
+            updateSnapshot(orgId, projectId, configId, snapshotId, String.format("{ \"id\": %s, \"name\": \"edit.snapshot\", \"description\": \"edited\", \"fileId\": \"9ab940fa-9f47-4fb6-af69-d89cb0a01d38\" }", snapshotId));
+            Snapshot snapshot = getSnapshot(orgId, projectId, configId, snapshotId);
+            assertEquals("edited", snapshot.getDescription());
+        }
+
+    }
+
     public void login(String name, String mail) throws Exception {
         //params.put("SAMLResponse", "hogehoge");
         Map<String,String> params = new HashMap<>();
@@ -377,4 +491,70 @@ public class AppTest {
         client.put("/orgs/" + orgId + "/members/" + orgMemberId, body);
     }
 
+    public Id uploadFile(Id orgId, byte[] body) throws Exception {
+        byte[] file = client.postBytes("/orgs/" + orgId + "/storages/", null, body);
+        String fileStr = new String(file, StandardCharsets.UTF_8);
+        return Id.createFromJson(fileStr);
+    }
+
+    public Id multiUploadFile(Id orgId, byte[] body) throws Exception {
+        byte[] body0 = ArrayUtils.subarray(body, 0, body.length/2);
+        byte[] body1 = ArrayUtils.subarray(body, body.length/2, body.length);
+        Id fileId = Id.createFromJson(client.post("/orgs/" + orgId + "/storages/multipart/", null, null));
+        String path0 = String.format("/orgs/%s/storages/multipart/%s?action=upload&part=%d", orgId, fileId, 0);
+        client.postBytes(path0, null, body0);
+        String path1 = String.format("/orgs/%s/storages/multipart/%s?action=upload&part=%d", orgId, fileId, 1);
+        client.postBytes(path1, null, body1);
+        String pathF = String.format("/orgs/%s/storages/multipart/%s?action=finalize", orgId, fileId);
+        client.post(pathF, null, null);
+        return fileId;
+    }
+
+    public byte[] downloadFile(Id orgId, Id fileId) throws Exception {
+        return client.getBytes("/orgs/" + orgId + "/storages/" + fileId);
+    }
+
+    public Id createBinary(Id orgId, Id projectId, Id configId, String body) throws Exception {
+        String path = String.format("/orgs/%s/projects/%s/configs/%s/binaries/", orgId, projectId, configId);
+        String jsonConfigId = client.post(path, null, body);
+        return Id.createFromJson(jsonConfigId);
+    }
+
+    public Binary getBinary(Id orgId, Id projectId, Id configId, Id binaryId) throws Exception {
+        String path = String.format("/orgs/%s/projects/%s/configs/%s/binaries/%s", orgId, projectId, configId, binaryId);
+        String jsonConfig = client.get(path);
+        return Binary.createFromJson(jsonConfig);
+    }
+
+    public void updateBinary(Id orgId, Id projectId, Id configId, Id binaryId, String body) throws Exception {
+        String path = String.format("/orgs/%s/projects/%s/configs/%s/binaries/%s", orgId, projectId, configId, binaryId);
+        client.put(path, body);
+    }
+
+    public void deleteBinary(Id orgId, Id projectId, Id configId, Id binaryId) throws Exception {
+        String path = String.format("/orgs/%s/projects/%s/configs/%s/binaries/%s", orgId, projectId, configId, binaryId);
+        client.delete(path);
+    }
+
+    public Id createSnapshot(Id orgId, Id projectId, Id configId, String body) throws Exception {
+        String path = String.format("/orgs/%s/projects/%s/configs/%s/snapshots/", orgId, projectId, configId);
+        String jsonConfigId = client.post(path, null, body);
+        return Id.createFromJson(jsonConfigId);
+    }
+
+    public Snapshot getSnapshot(Id orgId, Id projectId, Id configId, Id snapshotId) throws Exception {
+        String path = String.format("/orgs/%s/projects/%s/configs/%s/snapshots/%s", orgId, projectId, configId, snapshotId);
+        String jsonConfig = client.get(path);
+        return Snapshot.createFromJson(jsonConfig);
+    }
+
+    public void updateSnapshot(Id orgId, Id projectId, Id configId, Id snapshotId, String body) throws Exception {
+        String path = String.format("/orgs/%s/projects/%s/configs/%s/snapshots/%s", orgId, projectId, configId, snapshotId);
+        client.put(path, body);
+    }
+
+    public void deleteSnapshot(Id orgId, Id projectId, Id configId, Id snapshotId) throws Exception {
+        String path = String.format("/orgs/%s/projects/%s/configs/%s/snapshots/%s", orgId, projectId, configId, snapshotId);
+        client.delete(path);
+    }
 }

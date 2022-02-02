@@ -63,11 +63,11 @@ const ProjectView: React.FC<Props> = ({project}) => {
                 style={{margin:"1em 0 0 0", borderBottom:"1px solid #aaaaaa"}}
             >
                 <Tab
-                    label={<IconText icon={<SettingsApplications style={{margin:"0 0.3em 0 0"}} />} text="コンフィグ" />}
+                    label={<IconText icon={<SettingsApplications />} text="コンフィグ" />}
                     onClick={() => {setFocusTab(0)}}
                 />
                 <Tab
-                    label={<IconText icon={<Star style={{margin:"0 0.3em 0 0"}} />} text="メモ" />}
+                    label={<IconText icon={<Star />} text="メモ" />}
                     onClick={() => {setFocusTab(1)}}
                 />
             </Tabs>

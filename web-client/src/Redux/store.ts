@@ -22,6 +22,8 @@ import {project} from "./Slice/Project";
 import {orgMember} from "./Slice/OrgMember";
 import {account} from "./Slice/Account";
 import {config} from "./Slice/Config";
+import {binary} from "./Slice/Binary";
+import {snapshot} from "./Slice/Snapshot";
 import {treeOpenState} from "./Slice/TreeOpenState"
 
 export const store = configureStore({
@@ -33,6 +35,8 @@ export const store = configureStore({
         orgMembers: orgMember.reducer,
         projects: project.reducer,
         configs: config.reducer,
+        binaries: binary.reducer,
+        snapshots: snapshot.reducer,
         treeOpenStates: treeOpenState.reducer,
     }),
     middleware: [...getDefaultMiddleware()]

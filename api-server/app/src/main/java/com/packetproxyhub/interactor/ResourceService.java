@@ -29,6 +29,10 @@ public class ResourceService implements IResourceService {
     private IConfigService configService;
     @Inject
     private IOrgMemberService orgMemberService;
+    @Inject
+    private IBinaryService binaryService;
+    @Inject
+    private ISnapshotService snapshotService;
 
     public Resource getAllResource(Id myAccountId) throws Exception {
         Resource resource = Resource.create();
@@ -51,6 +55,16 @@ public class ResourceService implements IResourceService {
                     Configs configs = configService.getConfigs(myAccountId, org.getId(), project.getId());
                     if (!configs.set().isEmpty()) {
                         resource.addConfigs(org.getId(), project.getId(), configs);
+                        for (Config config: configs.set()) {
+                            Binaries binaries = binaryService.getBinaries(myAccountId, org.getId(), project.getId(), config.getId());
+                            if (!binaries.set().isEmpty()) {
+                                resource.addBinaries(org.getId(), project.getId(), config.getId(), binaries);
+                            }
+                            Snapshots snapshots = snapshotService.getSnapshots(myAccountId, org.getId(), project.getId(), config.getId());
+                            if (!snapshots.set().isEmpty()) {
+                                resource.addSnapshots(org.getId(), project.getId(), config.getId(), snapshots);
+                            }
+                        }
                     }
                 }
 

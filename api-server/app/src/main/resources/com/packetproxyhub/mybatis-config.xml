@@ -7,17 +7,19 @@
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>
-            <dataSource type="com.packetproxyhub.repository.sqlite.SqliteDataSourceFactory">
+            <dataSource type="com.packetproxyhub.repository.database.sqlite.SqliteDataSourceFactory">
                 <property name="driver" value="org.sqlite.JDBC"/>
                 <property name="url" value="jdbc:sqlite:${SQLITE_FILE_PATH}"/>
             </dataSource>
         </environment>
     </environments>
     <mappers>
-        <mapper resource="com/packetproxyhub/repository/sqlite/AccountMapper.xml"/>
-        <mapper resource="com/packetproxyhub/repository/sqlite/OrgMapper.xml"/>
-        <mapper resource="com/packetproxyhub/repository/sqlite/ProjectMapper.xml"/>
-        <mapper resource="com/packetproxyhub/repository/sqlite/ConfigMapper.xml"/>
-        <mapper resource="com/packetproxyhub/repository/sqlite/OrgMemberMapper.xml"/>
+        <mapper resource="com/packetproxyhub/repository/database/sqlite/AccountMapper.xml"/>
+        <mapper resource="com/packetproxyhub/repository/database/sqlite/OrgMapper.xml"/>
+        <mapper resource="com/packetproxyhub/repository/database/sqlite/ProjectMapper.xml"/>
+        <mapper resource="com/packetproxyhub/repository/database/sqlite/ConfigMapper.xml"/>
+        <mapper resource="com/packetproxyhub/repository/database/sqlite/OrgMemberMapper.xml"/>
+        <mapper resource="com/packetproxyhub/repository/database/sqlite/BinaryMapper.xml"/>
+        <mapper resource="com/packetproxyhub/repository/database/sqlite/SnapshotMapper.xml"/>
     </mappers>
 </configuration>

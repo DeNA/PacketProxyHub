@@ -33,7 +33,7 @@ public class LoginRoute extends Route {
     @Inject
     private IAccountService accountService;
 
-    private void setSessionKeyToCookie(HttpServletResponse response, SessionKey sessionKey) {
+    static public void setSessionKeyToCookie(HttpServletResponse response, SessionKey sessionKey) {
         Cookie cookie = new Cookie("packetproxyhub_session", sessionKey.toSessonKeyString());
         cookie.setMaxAge(86400); /* 1 day */
         cookie.setPath("/");
@@ -43,7 +43,7 @@ public class LoginRoute extends Route {
         response.addCookie(cookie);
     }
 
-    private void resetCookie(HttpServletResponse response) {
+    static public void resetCookie(HttpServletResponse response) {
         Cookie cookie = new Cookie("packetproxyhub_session", "");
         cookie.setMaxAge(0);
         cookie.setPath("/");
@@ -136,5 +136,4 @@ public class LoginRoute extends Route {
         }
         return false;
     }
-
 }

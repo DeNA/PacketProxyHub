@@ -36,6 +36,9 @@ public class Routes {
         routeMap.add(injector.getInstance(OrgRoute.class));
         routeMap.add(injector.getInstance(OrgMemberRoute.class));
         routeMap.add(injector.getInstance(ResourceRoute.class));
+        routeMap.add(injector.getInstance(StorageRoute.class));
+        routeMap.add(injector.getInstance(BinaryRoute.class));
+        routeMap.add(injector.getInstance(SnapshotRoute.class));
     }
 
     public void execGet(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -70,5 +73,4 @@ public class Routes {
         }
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
-
 }

@@ -18,11 +18,13 @@ package com.packetproxyhub.application;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.util.BytesContentProvider;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.util.HttpCookieStore;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class ApiClient {
@@ -40,30 +42,51 @@ public class ApiClient {
     public String get(String path) throws Exception {
         Request request = client.newRequest(baseUri + path);
         request.method(HttpMethod.GET);
-        return sendRequest(request, null, null);
+        return sendRequestAsString(request, null, null);
     }
 
     public String post(String path, Map<String,String> params, String body) throws Exception {
         Request request = client.newRequest(baseUri + path);
         request.method(HttpMethod.POST);
-        return sendRequest(request, params, body);
+        return sendRequestAsString(request, params, body);
     }
 
     public String put(String path, String body) throws Exception {
         Request request = client.newRequest(baseUri + path);
         request.method(HttpMethod.PUT);
-        return sendRequest(request, null, body);
+        return sendRequestAsString(request, null, body);
     }
 
     public String delete(String path) throws Exception {
         Request request = client.newRequest(baseUri + path);
         request.method(HttpMethod.DELETE);
+        return sendRequestAsString(request, null, null);
+    }
+
+    public byte[] getBytes(String path) throws Exception {
+        Request request = client.newRequest(baseUri + path);
+        request.method(HttpMethod.GET);
         return sendRequest(request, null, null);
     }
 
-    public String sendRequest(Request request, Map<String,String> params, String body) throws Exception {
+    public byte[] postBytes(String path, Map<String,String> params, byte[] body) throws Exception {
+        Request request = client.newRequest(baseUri + path);
+        request.method(HttpMethod.POST);
+        return sendRequest(request, params, body);
+    }
+
+    public String sendRequestAsString(Request request, Map<String,String> params, String bodyString) throws Exception {
+        byte[] body = null;
+        if (bodyString != null) {
+            body = bodyString.getBytes(StandardCharsets.UTF_8);
+        }
+        byte[] res = sendRequest(request, params, body);
+        return new String(res, StandardCharsets.UTF_8);
+    }
+
+    public byte[] sendRequest(Request request, Map<String,String> params, byte[] body) throws Exception {
         if (body != null) {
-            request.content(new StringContentProvider(body));
+            request.content(new BytesContentProvider(body));
             request.header("Content-Type", "application/json");
         }
         if (params != null) {
@@ -82,7 +105,7 @@ public class ApiClient {
                     )
             );
         }
-        return res.getContentAsString();
+        return res.getContent();
     }
 
 }

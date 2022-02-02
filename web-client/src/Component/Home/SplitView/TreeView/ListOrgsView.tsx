@@ -49,7 +49,7 @@ const ListOrgsView : React.FC<Props> = ({ selectedId, onClickOrg, onClickProject
     return (
         <div>
             <Button size="small" variant="outlined" style={{color:green[500],margin:"5px",borderColor:green[500]}} onClick={() => setOpenCreateDlgState(true)}>
-                <IconText icon={<Add />} text="新規組織" />
+                <IconText icon={<Add />} text={"新規組織"} />
             </Button>
             <List component="div" dense={false} disablePadding>
                 {

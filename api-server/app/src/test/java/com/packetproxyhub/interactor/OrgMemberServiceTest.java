@@ -21,7 +21,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.packetproxyhub.application.App;
 import com.packetproxyhub.entity.*;
-import com.packetproxyhub.repository.mock.MockRepository;
+import com.packetproxyhub.repository.database.mock.MockRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

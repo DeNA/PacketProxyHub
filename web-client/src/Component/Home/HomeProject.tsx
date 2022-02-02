@@ -19,7 +19,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     orgsSelectors,
     Project,
-    projectsSelectors,
     selectOrgByName,
     selectProjectByName,
     treeOpenStatesSelectors,
@@ -28,7 +27,6 @@ import {
 import SplitView from "./SplitView/SplitView";
 import {ProjectView} from "./ContentView";
 import {RootState} from "../../Redux/store";
-import {useHistory} from "react-router-dom";
 
 interface Props {
     orgName: string

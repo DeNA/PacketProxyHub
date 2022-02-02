@@ -49,6 +49,10 @@ public class OrgRoute extends Route {
                 response.setStatus(HttpServletResponse.SC_OK);
                 replyResponseAsJson(response, orgIds.toJson());
 
+            } catch (IllegalAccessException e) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                LoginRoute.resetCookie(response);
+
             } catch (Exception e) {
                 e.printStackTrace();
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -64,9 +68,13 @@ public class OrgRoute extends Route {
                 response.setStatus(HttpServletResponse.SC_OK);
                 replyResponseAsJson(response, orgs.toJson());
 
+            } catch (IllegalAccessException e) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                LoginRoute.resetCookie(response);
+
             } catch (Exception e) {
                 e.printStackTrace();
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         })) { return true; }
         // get a org
@@ -77,16 +85,20 @@ public class OrgRoute extends Route {
 
                 Org org = orgService.getOrg(myAccountId, orgId);
                 if (org == null) {
-                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     return;
                 }
 
                 response.setStatus(HttpServletResponse.SC_OK);
                 replyResponseAsJson(response, org.toJson());
 
+            } catch (IllegalAccessException e) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                LoginRoute.resetCookie(response);
+
             } catch (Exception e) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 e.printStackTrace();
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         })) { return true; }
 
@@ -107,9 +119,13 @@ public class OrgRoute extends Route {
                 response.setStatus(HttpServletResponse.SC_OK);
                 replyResponseAsJson(response, orgId.toJson());
 
+            } catch (IllegalAccessException e) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                LoginRoute.resetCookie(response);
+
             } catch (Exception e) {
                 e.printStackTrace();
-                response.setStatus(HttpServletResponse.SC_CONFLICT);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         })) { return true; }
 
@@ -130,6 +146,10 @@ public class OrgRoute extends Route {
 
                 response.setStatus(HttpServletResponse.SC_OK);
                 replyResponseAsJson(response, "{\"status\":\"ok\"}");
+
+            } catch (IllegalAccessException e) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                LoginRoute.resetCookie(response);
 
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -152,6 +172,10 @@ public class OrgRoute extends Route {
 
                 response.setStatus(HttpServletResponse.SC_OK);
                 replyResponseAsJson(response, "{\"status\":\"ok\"}");
+
+            } catch (IllegalAccessException e) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                LoginRoute.resetCookie(response);
 
             } catch (Exception e) {
                 e.printStackTrace();

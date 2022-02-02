@@ -19,7 +19,6 @@ import com.packetproxyhub.entity.AccessChecker.AccessChecker;
 import com.packetproxyhub.entity.*;
 
 import javax.inject.Inject;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -87,7 +86,7 @@ public class OrgService implements IOrgService {
 
     @Override
     public void updateOrg(Id accountId, Id orgId, Org org) throws Exception {
-        if (AccessChecker.create(accountId, repository).isOrgReadable(orgId) == false) {
+        if (AccessChecker.create(accountId, repository).isOrgWritable(orgId) == false) {
             throw new IllegalAccessException();
         }
         Org newOrg = Org.create(

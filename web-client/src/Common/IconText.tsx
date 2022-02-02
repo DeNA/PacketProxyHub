@@ -24,7 +24,9 @@ interface Props {
 const IconText : React.FC<Props> = ({icon, text}) => {
     return (
         <div style={{display:"flex",alignItems:"center",justifyContent:"flex-start"}} >
-            {icon}
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",margin:"0 0.3em 0 0"}}>
+                {icon}
+            </div>
             {text}
         </div>
     )

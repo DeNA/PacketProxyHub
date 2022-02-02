@@ -39,6 +39,14 @@ const Home : React.FC = () => {
     return (
         <div>
             <Switch>
+                <Route exact path={"/orgs/:orgId/projects/:projectId/configs/:configId/:configTabName"} render={({match})=>
+                    <HomeRedirector
+                        orgId={match.params.orgId}
+                        projectId={match.params.projectId}
+                        configId={match.params.configId}
+                        configTabName={match.params.configTabName}
+                    />
+                }/>
                 <Route exact path={"/orgs/:orgId/projects/:projectId/configs/:configId"} render={({match})=>
                     <HomeRedirector
                         orgId={match.params.orgId}
@@ -71,6 +79,14 @@ const Home : React.FC = () => {
                         orgName={decodeURIComponent(match.params.orgName)}
                         projectName={decodeURIComponent(match.params.projectName)}
                         configName={decodeURIComponent(match.params.configName)}
+                    />
+                }/>
+                <Route exact path={"/:orgName/:projectName/:configName/:configTabName"} render={({match}) =>
+                    <HomeConfig
+                        orgName={decodeURIComponent(match.params.orgName)}
+                        projectName={decodeURIComponent(match.params.projectName)}
+                        configName={decodeURIComponent(match.params.configName)}
+                        configTabName={decodeURIComponent(match.params.configTabName)}
                     />
                 }/>
                 <Route path="(/)?" render={({match}) =>

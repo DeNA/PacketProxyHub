@@ -155,4 +155,8 @@ public class AppSettings {
         return properties.getProperty("DATABASE_PATH");
     }
 
+    public String getDataDirPath() {
+        return properties.getProperty("DATA_DIR_PATH");
+    }
+
 }

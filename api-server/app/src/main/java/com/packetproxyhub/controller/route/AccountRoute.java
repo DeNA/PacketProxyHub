@@ -59,6 +59,10 @@ public class AccountRoute extends Route {
         if (match ("/accounts/{accountId}", path, (a) -> {
             try {
                 Account myAccount = getAccount(request);
+                if (myAccount == null) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    return;
+                }
                 Id accountId = a.get("accountId").equals("me") ? myAccount.getId() : Id.createFromString(a.get("accountId"));
                 Account account = accountService.getAccount(myAccount.getId(), accountId);
 

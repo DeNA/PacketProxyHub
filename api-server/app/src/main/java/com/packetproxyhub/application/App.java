@@ -20,7 +20,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.packetproxyhub.controller.WebApiController;
 import com.packetproxyhub.interactor.*;
-import com.packetproxyhub.repository.sqlite.SqliteRepository;
+import com.packetproxyhub.repository.database.sqlite.SqliteRepository;
+import com.packetproxyhub.repository.filesystem.unix.UnixFilesystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +51,12 @@ public class App {
                 bind(IConfigService.class).to(ConfigService.class).asEagerSingleton();
                 bind(IOrgService.class).to(OrgService.class).asEagerSingleton();
                 bind(IOrgMemberService.class).to(OrgMemberService.class).asEagerSingleton();
+                bind(IStorageService.class).to(StorageService.class).asEagerSingleton();
                 bind(IResourceService.class).to(ResourceService.class).asEagerSingleton();
                 bind(IRepository.class).to(SqliteRepository.class).asEagerSingleton();
+                bind(IFilesystem.class).to(UnixFilesystem.class).asEagerSingleton();
+                bind(IBinaryService.class).to(BinaryService.class).asEagerSingleton();
+                bind(ISnapshotService.class).to(SnapshotService.class).asEagerSingleton();
             }
         });
 

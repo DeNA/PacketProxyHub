@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.packetproxyhub.repository.database.sqlite.BinaryMapper">
+    <resultMap id="test" type="com.packetproxyhub.repository.database.sqlite.dao.DaoBinary">
+        <id property="dbId" column="dbId" />
+        <result property="description" column="description" />
+        <result property="uploadedAt" column="uploadedAt" />
+        <association property="id" column="id" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+            <result property="id" column="id" />
+        </association>
+        <association property="name" column="name" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoName">
+            <result property="name" column="name" />
+        </association>
+        <association property="fileId" column="fileId" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+            <result property="id" column="fileId" />
+        </association>
+        <association property="uploadedBy" column="uploadedBy" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+            <result property="id" column="uploadedBy" />
+        </association>
+        <association property="configId" column="configId" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+            <result property="id" column="configId" />
+        </association>
+    </resultMap>
+    <update id="createTable">
+        CREATE TABLE IF NOT EXISTS Binary (
+            dbId INTEGER UNIQUE,
+            id TEXT PRIMARY KEY,
+            name TEXT,
+            description TEXT,
+            fileId TEXT,
+            uploadedBy TEXT,
+            uploadedAt LONG,
+            configId TEXT REFERENCES Config(id) ON DELETE CASCADE
+        )
+    </update>
+    <select id="selectAll" resultMap="test">
+        SELECT * FROM Binary
+    </select>
+    <select id="select"
+            parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoId"
+            resultMap="test">
+        SELECT * FROM Binary WHERE id = #{id}
+    </select>
+    <select id="selectByConfigId"
+            parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoId"
+            resultMap="test">
+        SELECT * FROM Binary WHERE configId = #{id}
+    </select>
+    <insert id="insert" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoBinary">
+        INSERT INTO Binary (
+            dbId, configId, id, name, description, fileId, uploadedBy, uploadedAt
+        ) VALUES (
+            #{dbId}, #{configId.id}, #{id.id}, #{name.name}, #{description}, #{fileId.id}, #{uploadedBy.id}, #{uploadedAt}
+        )
+    </insert>
+    <insert id="bulkInsert" parameterType="java.util.Set">
+        INSERT INTO Binary (
+            dbId, configId, id, name, description, fileId, uploadedBy, uploadedAt
+        ) VALUES
+        <foreach collection="daoBinaries" item="binary" index="index" separator=",">
+            (#{binary.dbId}, #{binary.configId.id}, #{binary.id.id}, #{binary.name.name}, #{binary.description}, #{binary.fileId.id}, #{binary.uploadedBy.id}, #{binary.uploadedAt})
+        </foreach>
+    </insert>
+    <insert id="bulkInsertIfNotExists" parameterType="java.util.Set">
+        INSERT OR IGNORE INTO Binary (
+            dbId, projectId, id, name, description, fileId, uploadedBy, uploadedAt
+        ) VALUES
+        <foreach collection="daoBinaries" item="binary" index="index" separator=",">
+            (#{binary.dbId}, #{binary.configId.id}, #{binary.id.id}, #{binary.name.name}, #{binary.description}, #{binary.fileId.id}, #{binary.uploadedBy.id}, #{binary.uploadedAt})
+        </foreach>
+    </insert>
+    <update id="update" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoBinary">
+        UPDATE Binary SET
+            name = #{name.name},
+            description = #{description},
+            fileId = #{fileId.id},
+            uploadedBy = #{uploadedBy.id},
+            uploadedAt = #{uploadedAt}
+        WHERE id = #{id.id}
+    </update>
+    <delete id="delete" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+        DELETE FROM Binary WHERE id = #{id}
+    </delete>
+</mapper>

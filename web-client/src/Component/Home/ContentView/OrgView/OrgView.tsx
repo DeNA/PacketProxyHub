@@ -82,11 +82,11 @@ const OrgView: React.FC<Props> = ({org}) => {
                 style={{margin:"1em 0 0 0", borderBottom:"1px solid #aaaaaa"}}
             >
                 <Tab
-                    label={<IconText icon={<Book style={{margin:"0 0.3em 0 0"}} />} text="プロジェクト" />}
+                    label={<IconText icon={<Book />} text="プロジェクト" />}
                     onClick={() => {setFocusTab(0)}}
                 />
                 <Tab
-                    label={<IconText icon={<Group style={{margin:"0 0.3em 0 0"}} />} text="メンバー" />}
+                    label={<IconText icon={<Group />} text="メンバー" />}
                     onClick={() => {setFocusTab(1)}}
                 />
             </Tabs>

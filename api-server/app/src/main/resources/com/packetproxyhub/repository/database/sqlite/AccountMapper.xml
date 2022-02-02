@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.packetproxyhub.repository.database.sqlite.AccountMapper">
+    <resultMap id="test" type="com.packetproxyhub.repository.database.sqlite.dao.DaoAccount">
+        <id property="dbId" column="dbId" />
+        <result property="mail" column="mail" />
+        <result property="packetProxyAccessToken" column="packetProxyAccessToken" />
+        <association property="name" column="name" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoName">
+            <result property="name" column="name" />
+        </association>
+        <association property="id" column="id" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+            <result property="id" column="id" />
+        </association>
+    </resultMap>
+    <insert id="createTable">
+        CREATE TABLE IF NOT EXISTS Account (
+            dbId INTEGER UNIQUE,
+            id TEXT PRIMARY KEY,
+            name TEXT UNIQUE,
+            mail TEXT UNIQUE,
+            packetProxyAccessToken TEXT
+        )
+    </insert>
+    <select id="selectAll"
+            parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoId"
+            resultMap="test">
+        SELECT * FROM Account
+    </select>
+    <select id="selectById"
+            parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoId"
+            resultMap="test">
+        SELECT * FROM Account WHERE id = #{id}
+    </select>
+    <select id="selectByMail" resultMap="test">
+        SELECT * FROM Account WHERE mail = #{mail}
+    </select>
+    <select id="searchByName" resultMap="test">
+        SELECT * FROM Account WHERE name like #{name}
+    </select>
+    <insert id="insert" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoAccount">
+        INSERT INTO Account (dbId, id, name, mail, packetProxyAccessToken) VALUES (#{dbId}, #{id.id}, #{name.name}, #{mail}, #{packetProxyAccessToken})
+    </insert>
+    <delete id="delete" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
+        DELETE FROM Account WHERE id = #{id}
+    </delete>
+    <update id="update" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoAccount">
+        UPDATE Account SET
+            name = #{name.name},
+            packetProxyAccessToken = #{packetProxyAccessToken}
+        WHERE id = #{id.id}
+    </update>
+</mapper>
