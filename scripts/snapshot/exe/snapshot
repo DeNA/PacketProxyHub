@@ -18,6 +18,7 @@ def choice_avd
   avd_names.each_with_index do |avd_name, index|
     puts "[AVD #{index}] #{avd_name}"
   end
+  puts ""
   print "AVD number[0-#{avd_names.size-1}]: "
   num = STDIN.gets.chomp.to_i
   Avd.new(avd_names[num])
@@ -37,20 +38,25 @@ if ARGV[0] == 'list'
       desc = "(#{snap.meta.description})" if !snap.meta.description.empty?
       puts "    [Snapshot #{snap_no}] #{snap.meta.name} #{desc}"
     end
+    puts ""
   end
 end
 
 if ARGV[0] == 'create'
   avd = choice_avd
+  puts ""
   avd.snaps.each_with_index do |snap, snap_no|
     desc = "(#{snap.meta.description})" if !snap.meta.description.empty?
-    puts "    [Snapshot #{snap_no}] #{snap.meta.name} #{desc}"
+    puts "[Snapshot #{snap_no}] #{snap.meta.name} #{desc}"
   end
+  puts ""
   print "Snapshot number[0-#{avd.snaps.size-1}]: "
   num = STDIN.gets.chomp.to_i
+  puts ""
   print "New AVD name: "
   new_avd_name = STDIN.gets.chomp
-  puts "Creating PacketProxyHub Snapshot image... take a few minutes to create."
+  puts ""
+  puts "Creating PacketProxyHub Snapshot image... take a few minutes to complete."
   avd.create_binary(avd.snaps[num].name, new_avd_name)
 end
 
