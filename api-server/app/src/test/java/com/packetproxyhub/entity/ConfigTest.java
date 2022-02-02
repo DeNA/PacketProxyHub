@@ -29,6 +29,7 @@ public class ConfigTest {
                 "dummy description",
                 "dummy packetproxy conf",
                 "dummy pf conf",
+                "dummy frida script",
                 "dummy memo memo");
         //System.out.println(config.toJson());
         Config restored = Config.createFromJson(config.toJson());

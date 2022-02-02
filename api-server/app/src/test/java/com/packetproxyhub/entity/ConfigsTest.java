@@ -25,9 +25,9 @@ public class ConfigsTest {
     @Test
     public void オブジェクトからJsonそしてJsonからオブジェクトへの変換ができること() throws Exception {
         Configs configs = Configs.create();
-        configs.add(Config.create(Name.create("name1"), "a1", "b1", "c1", "d1"));
-        configs.add(Config.create(Name.create("name2"), "a2", "b2", "c2", "d2"));
-        configs.add(Config.create(Name.create("name3"), "a3", "b3", "c3", "d3"));
+        configs.add(Config.create(Name.create("name1"), "a1", "b1", "c1", "d1", "e1"));
+        configs.add(Config.create(Name.create("name2"), "a2", "b2", "c2", "d2", "e2"));
+        configs.add(Config.create(Name.create("name3"), "a3", "b3", "c3", "d3", "e3"));
         //System.out.println(configs.toJson());
         Configs restored = Configs.createFromJson(configs.toJson());
         assertEquals(configs, restored);

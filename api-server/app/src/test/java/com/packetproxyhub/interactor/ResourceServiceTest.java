@@ -48,6 +48,8 @@ public class ResourceServiceTest {
                 bind(IProjectService.class).to(ProjectService.class).asEagerSingleton();
                 bind(IConfigService.class).to(ConfigService.class).asEagerSingleton();
                 bind(IOrgMemberService.class).to(OrgMemberService.class).asEagerSingleton();
+                bind(IBinaryService.class).to(BinaryService.class).asEagerSingleton();
+                bind(ISnapshotService.class).to(SnapshotService.class).asEagerSingleton();
             }
         });
         resourceService = injector.getInstance(ResourceService.class);
@@ -70,7 +72,7 @@ public class ResourceServiceTest {
         Project project2 = Project.create("Test Project 2", "desc 2", "content 2");
         projectService.createProject(account1.getId(), org.getId(), project1);
         projectService.createProject(account1.getId(), org.getId(), project2);
-        Config config1 = Config.create(Name.create("Config1"), "name", "2", "3", "4");
+        Config config1 = Config.create(Name.create("Config1"), "name", "2", "3", "4", "5");
         configService.createConfig(account1.getId(), org.getId(), project2.getId(), config1);
         OrgMember member = OrgMember.create(account2.getId());
         orgMemberService.createOrgMember(account1.getId(), org.getId(), member);

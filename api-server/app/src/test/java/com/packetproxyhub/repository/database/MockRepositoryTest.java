@@ -407,7 +407,7 @@ public class MockRepositoryTest {
         public void setup() {
             org = Org.create();
             project = Project.create("a", "b", "c");
-            config = Config.create(Name.create("a"), "b", "c", "d", "e");
+            config = Config.create(Name.create("a"), "b", "c", "d", "e", "f");
             repository.insertOrg(org);
             repository.insertProjectToOrg(org.getId(), project);
             repository.insertConfigToProject(project.getId(), config);
