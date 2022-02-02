@@ -35,7 +35,7 @@ import java.util.UUID;
 import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
-//@Disabled
+@Disabled
 public class AppTest {
     static Thread server;
 
