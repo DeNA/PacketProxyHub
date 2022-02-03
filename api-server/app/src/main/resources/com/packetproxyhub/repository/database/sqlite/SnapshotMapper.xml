@@ -4,6 +4,8 @@
     <resultMap id="test" type="com.packetproxyhub.repository.database.sqlite.dao.DaoSnapshot">
         <id property="dbId" column="dbId" />
         <result property="description" column="description" />
+        <result property="androidVersion" column="androidVersion" />
+        <result property="googlePlay" column="googlePlay" />
         <result property="uploadedAt" column="uploadedAt" />
         <association property="id" column="id" javaType="com.packetproxyhub.repository.database.sqlite.dao.DaoId">
             <result property="id" column="id" />
@@ -30,6 +32,8 @@
             id TEXT PRIMARY KEY,
             name TEXT,
             description TEXT,
+            androidVersion TEXT,
+            googlePlay LONG,
             fileId TEXT,
             screenshotId TEXT,
             uploadedBy TEXT,
@@ -52,31 +56,33 @@
     </select>
     <insert id="insert" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoSnapshot">
         INSERT INTO Snapshot (
-            dbId, configId, id, name, description, fileId, screenshotId, uploadedBy, uploadedAt
+            dbId, configId, id, name, description, androidVersion, googlePlay, fileId, screenshotId, uploadedBy, uploadedAt
         ) VALUES (
-            #{dbId}, #{configId.id}, #{id.id}, #{name.name}, #{description}, #{fileId.id}, #{screenshotId.id}, #{uploadedBy.id}, #{uploadedAt}
+            #{dbId}, #{configId.id}, #{id.id}, #{name.name}, #{description}, #{androidVersion}, #{googlePlay}, #{fileId.id}, #{screenshotId.id}, #{uploadedBy.id}, #{uploadedAt}
         )
     </insert>
     <insert id="bulkInsert" parameterType="java.util.Set">
         INSERT INTO Snapshot (
-            dbId, configId, id, name, description, fileId, screenshotId, uploadedBy, uploadedAt
+            dbId, configId, id, name, description, androidVersion, googlePlay, fileId, screenshotId, uploadedBy, uploadedAt
         ) VALUES
         <foreach collection="daoSnapshots" item="snapshot" index="index" separator=",">
-            (#{snapshot.dbId}, #{snapshot.configId.id}, #{snapshot.id.id}, #{snapshot.name.name}, #{snapshot.description}, #{snapshot.fileId.id}, #{snapshot.screenshotId.id}, #{snapshot.uploadedBy.id}, #{snapshot.uploadedAt})
+            (#{snapshot.dbId}, #{snapshot.configId.id}, #{snapshot.id.id}, #{snapshot.name.name}, #{snapshot.description}, #{snapshot.androidVersion}, #{snapshot.googlePlay}, #{snapshot.fileId.id}, #{snapshot.screenshotId.id}, #{snapshot.uploadedBy.id}, #{snapshot.uploadedAt})
         </foreach>
     </insert>
     <insert id="bulkInsertIfNotExists" parameterType="java.util.Set">
         INSERT OR IGNORE INTO Snapshot (
-            dbId, projectId, id, name, description, fileId, screenshotId, uploadedBy, uploadedAt
+            dbId, projectId, id, name, description, androidVersion, googlePlay, fileId, screenshotId, uploadedBy, uploadedAt
         ) VALUES
         <foreach collection="daoSnapshots" item="snapshot" index="index" separator=",">
-            (#{snapshot.dbId}, #{snapshot.configId.id}, #{snapshot.id.id}, #{snapshot.name.name}, #{snapshot.description}, #{snapshot.fileId.id}, #{snapshot.screenshotId.id}, #{snapshot.uploadedBy.id}, #{snapshot.uploadedAt})
+            (#{snapshot.dbId}, #{snapshot.configId.id}, #{snapshot.id.id}, #{snapshot.name.name}, #{snapshot.description}, #{snapshot.androidVersion}, #{snapshot.googlePlay}, #{snapshot.fileId.id}, #{snapshot.screenshotId.id}, #{snapshot.uploadedBy.id}, #{snapshot.uploadedAt})
         </foreach>
     </insert>
     <update id="update" parameterType="com.packetproxyhub.repository.database.sqlite.dao.DaoSnapshot">
         UPDATE Snapshot SET
             name = #{name.name},
             description = #{description},
+            androidVersion = #{androidVersion},
+            googlePlay = #{googlePlay},
             fileId = #{fileId.id},
             screenshotId = #{screenshotId.id},
             uploadedBy = #{uploadedBy.id},

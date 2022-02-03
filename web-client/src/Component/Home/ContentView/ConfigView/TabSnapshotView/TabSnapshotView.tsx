@@ -45,6 +45,8 @@ import {Apple, DeviceUnknown, Download} from "@mui/icons-material";
 import {red} from "@mui/material/colors";
 import EditSnapshotDialog from "../../../Dialog/Snapshot/EditSnapshotDialog";
 import Preview from "../../../../../Common/Preview"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faGooglePlay } from "@fortawesome/free-brands-svg-icons"
 
 interface Props {
     config: Config
@@ -99,8 +101,10 @@ const TabSnapshotView : React.FC<Props> = ({config}) => {
                                 <TableCell style={{fontWeight:"bold"}} align="center" width="100px">Screenshot</TableCell>
                                 <TableCell style={{fontWeight:"bold"}}>ファイル名</TableCell>
                                 <TableCell style={{fontWeight:"bold"}} width="auto">概要</TableCell>
-                                <TableCell style={{fontWeight:"bold"}}>アップロード者</TableCell>
-                                <TableCell style={{fontWeight:"bold"}}>アップロード時刻</TableCell>
+                                <TableCell style={{fontWeight:"bold"}} align="center">Android Version</TableCell>
+                                <TableCell style={{fontWeight:"bold"}} align="center">GooglePlay有無</TableCell>
+                                <TableCell style={{fontWeight:"bold"}} align="center">アップロード者</TableCell>
+                                <TableCell style={{fontWeight:"bold"}} align="center">アップロード時刻</TableCell>
                                 <TableCell style={{fontWeight:"bold"}} align="center" width="20px">Download</TableCell>
                                 <TableCell style={{fontWeight:"bold"}} align="center" width="20px">編集</TableCell>
                                 <TableCell style={{fontWeight:"bold"}} align="center" width="20px">削除</TableCell>
@@ -109,34 +113,29 @@ const TabSnapshotView : React.FC<Props> = ({config}) => {
                         <TableBody>
                             { snapshots.sort((a:Snapshot, b:Snapshot) => { return a!.uploadedAt! - b!.uploadedAt! }).map((snapshot) => {
                                 return <TableRow key={snapshot.id}>
-                                    <TableCell width="auto">
+                                    <TableCell align="center">
                                         { snapshot.resizedScreenshot &&
                                             <Preview resizedFile={snapshot.resizedScreenshot} />
                                         }
                                     </TableCell>
                                     <TableCell>
-                                        <IconText
-                                            icon={
-                                                <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
-                                                    { (snapshot.name.endsWith(".snapshot") || snapshot.name.endsWith(".snapshots")) && <Android style={{color: green[300]}}/> }
-                                                    { snapshot.name.endsWith(".ipa") && <Apple /> }
-                                                    { !snapshot.name.endsWith(".snapshot") && !snapshot.name.endsWith(".snapshots") && !snapshot.name.endsWith(".ipa") && <DeviceUnknown style={{color: red[300]}}/> }
-                                                </div>
-                                            }
-                                            text={
-                                                <Link href="#" color="inherit" onClick={() => handleOnDownload(snapshot)} >
-                                                    {snapshot.name}
-                                                </Link>
-                                            }
-                                        />
+                                        <Link href="#" color="inherit" onClick={() => handleOnDownload(snapshot)} >
+                                            {snapshot.name}
+                                        </Link>
                                     </TableCell>
                                     <TableCell width="auto">
                                         { snapshot.description }
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell align="center">
+                                        { snapshot.androidVersion }
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        { snapshot.googlePlay === 1 && <FontAwesomeIcon icon={faGooglePlay} />}
+                                    </TableCell>
+                                    <TableCell align="center">
                                         <AccountName accountId={snapshot.uploadedBy} />
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell align="center">
                                         {
                                             new PHDate(snapshot.uploadedAt && snapshot.uploadedAt).toString()
                                         }

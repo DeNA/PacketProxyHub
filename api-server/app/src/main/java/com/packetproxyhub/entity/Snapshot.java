@@ -35,15 +35,15 @@ public class Snapshot implements JsonSerializer<Snapshot>, JsonDeserializer<Snap
             setPrettyPrinting().create();
 
     static public Snapshot create() {
-        return create(Name.create(), "", Id.create(), Id.create());
+        return create(Name.create(), "", "", 0, Id.create(), Id.create());
     }
 
-    static public Snapshot create(Name name, String description, Id fileId, Id screenshotId) {
-        return create(Id.create(), name, description, fileId, screenshotId, Id.EMPTY, now());
+    static public Snapshot create(Name name, String description, String androidVersion, long googlePlay, Id fileId, Id screenshotId) {
+        return create(Id.create(), name, description, androidVersion, googlePlay, fileId, screenshotId, Id.EMPTY, now());
     }
 
-    static public Snapshot create(Id id, Name name, String description, Id fileId, Id screenshotId, Id uploadedBy, long uploadedAt) {
-        return new Snapshot(id, name, description, fileId, screenshotId, uploadedBy, uploadedAt);
+    static public Snapshot create(Id id, Name name, String description, String androidVersion, long googlePlay, Id fileId, Id screenshotId, Id uploadedBy, long uploadedAt) {
+        return new Snapshot(id, name, description, androidVersion, googlePlay, fileId, screenshotId, uploadedBy, uploadedAt);
     }
 
     static public Snapshot createFromJson(String json) {
@@ -57,15 +57,19 @@ public class Snapshot implements JsonSerializer<Snapshot>, JsonDeserializer<Snap
     private Id id;
     private Name name;
     private String description;
+    private String androidVersion;
+    private long googlePlay;
     private Id fileId;
     private Id screenshotId;
     private Id uploadedBy;
     private long uploadedAt;
 
-    private Snapshot(Id id, Name name, String description, Id fileId, Id screenshotId, Id uploadedBy, long uploadedAt) {
+    private Snapshot(Id id, Name name, String description, String androidVersion, long googlePlay, Id fileId, Id screenshotId, Id uploadedBy, long uploadedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.androidVersion = androidVersion;
+        this.googlePlay = googlePlay;
         this.fileId = fileId;
         this.screenshotId = screenshotId;
         this.uploadedBy = uploadedBy;
@@ -73,7 +77,7 @@ public class Snapshot implements JsonSerializer<Snapshot>, JsonDeserializer<Snap
     }
 
     public Snapshot uploadedBy(Id uploadedBy) {
-        return Snapshot.create(id, name, description, fileId, screenshotId, uploadedBy, now());
+        return Snapshot.create(id, name, description, androidVersion, googlePlay, fileId, screenshotId, uploadedBy, now());
     }
 
     public boolean equalsId(Id id) {
@@ -86,6 +90,8 @@ public class Snapshot implements JsonSerializer<Snapshot>, JsonDeserializer<Snap
         result.add("id", src.id.serialize(src.id, Id.class, context));
         result.add("name", src.name.serialize(src.name, Name.class, context));
         result.add("description", new JsonPrimitive(src.description));
+        result.add("androidVersion", new JsonPrimitive(src.androidVersion));
+        result.add("googlePlay", new JsonPrimitive(src.googlePlay));
         result.add("fileId", src.fileId.serialize(src.fileId, Id.class, context));
         result.add("screenshotId", src.screenshotId.serialize(src.screenshotId, Id.class, context));
         result.add("uploadedBy", src.uploadedBy.serialize(src.uploadedBy, Id.class, context));
@@ -99,11 +105,13 @@ public class Snapshot implements JsonSerializer<Snapshot>, JsonDeserializer<Snap
         Id id = Id.create().deserialize(jsonObject.get("id"), Id.class, context);
         Name name = Name.create().deserialize(jsonObject.get("name"), Name.class, context);
         String description = jsonObject.get("description") != null ? jsonObject.get("description").getAsString() : "";
+        String androidVersion = jsonObject.get("androidVersion") != null ? jsonObject.get("androidVersion").getAsString() : "";
+        long googlePlay = jsonObject.get("googlePlay") != null ? jsonObject.get("googlePlay").getAsLong() : 0;
         Id fileId = Id.create().deserialize(jsonObject.get("fileId"), Id.class, context);
         Id screenshotId = Id.create().deserialize(jsonObject.get("screenshotId"), Id.class, context);
         Id uploadedBy = Id.create().deserialize(jsonObject.get("uploadedBy"), Id.class, context);
         long uploadedAt = jsonObject.get("uploadedAt") != null ? jsonObject.get("uploadedAt").getAsLong() : now();
-        return new Snapshot(id, name, description, fileId, screenshotId, uploadedBy, uploadedAt);
+        return new Snapshot(id, name, description, androidVersion, googlePlay, fileId, screenshotId, uploadedBy, uploadedAt);
     }
 
     public String toJson() {

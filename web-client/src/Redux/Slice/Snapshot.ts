@@ -24,6 +24,8 @@ export interface Snapshot {
     id: string
     name: string
     description: string
+    androidVersion: string
+    googlePlay: number
     fileId: string
     screenshotId: string
     uploadedBy: string
@@ -38,6 +40,8 @@ export const initialSnapshot = {
     id: "",
     name: "",
     description: "",
+    androidVersion: "",
+    googlePlay: 0,
     fileId: "",
     screenshotId: "",
     uploadedBy: "",

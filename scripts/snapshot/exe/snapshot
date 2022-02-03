@@ -25,11 +25,12 @@ def choice_avd
 end
 
 if ARGV.length == 0
-  usage()
+  usage
   exit(1)
 end
 
-if ARGV[0] == 'list'
+case ARGV[0]
+when 'list' then
   avd_names = Avd.list_avd
   avd_names.each_with_index do |avd_name, index|
     puts "[AVD #{index}] #{avd_name}"
@@ -40,9 +41,8 @@ if ARGV[0] == 'list'
     end
     puts ""
   end
-end
 
-if ARGV[0] == 'create'
+when 'create' then
   avd = choice_avd
   puts ""
   avd.snaps.each_with_index do |snap, snap_no|
@@ -58,18 +58,20 @@ if ARGV[0] == 'create'
   puts ""
   puts "Creating PacketProxyHub Snapshot image... take a few minutes to complete."
   avd.create_binary(avd.snaps[num].name, new_avd_name)
-end
 
-if ARGV[0] == 'extract'
+when 'extract' then
   if ARGV[1].nil? || ARGV[1].empty?
-    usage()
+    usage
     exit(1)
   end
   Avd.extract_binary(ARGV[1])
-end
 
-if ARGV[0] == 'start'
+when 'start' then
   avd = choice_avd
   puts "booting #{avd.name}..."
   system("nohup #{Dir.home}/Library/Android/sdk/emulator/emulator -netdelay none -netspeed full -avd #{avd.name} > /dev/null &")
+
+else
+  usage
+
 end

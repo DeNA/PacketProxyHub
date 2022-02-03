@@ -9,7 +9,7 @@ require 'snapshot/avd/snapshot/snap'
 
 class Avd
 
-  attr_reader :name, :dir_name, :dir_path, :ini_name, :ini_path, :snapshot_root_path, :snaps
+  attr_reader :name, :dir_name, :dir_path, :ini_name, :ini_path, :snapshot_root_path, :snaps, :android_version, :google_play
   AVD_HOME_ROOT_PATH = Pathname(Dir.home) + '.android' + 'avd'
 
   def self.list_avd
@@ -43,6 +43,8 @@ class Avd
     @ini = Ini.new(@ini_path)
     @config_ini_path = @dir_path + "config.ini"
     @config_ini = AvdConfigIni.new(@config_ini_path)
+    @android_version = @config_ini.android_version
+    @google_play = @config_ini.google_play
     @hardware_qemu_ini_path = @dir_path + "hardware-qemu.ini"
     @hardware_qemu_ini = AvdHardwareQemuIni.new(@hardware_qemu_ini_path)
     @emu_launch_params_path = @dir_path + "emu-launch-params.txt"
@@ -106,6 +108,13 @@ class Avd
     Avd.new(@name, new_root_dir)
   end
 
+  # === Binary Format ===
+  # magic number "PPHS" : 4
+  # google play (1:true, 0:false) : 1
+  # android version: 64
+  # screenshot size: 4
+  # screenshot: variable length
+  # snapshot image (tar.gz): variable length
   def create_binary(snapshot_name, new_avd_name)
     Dir.mktmpdir do |tmpdir|
       tmpdir_path = Pathname(tmpdir)
@@ -119,12 +128,22 @@ class Avd
       tar_path = tmpdir_path + tar_name
       break unless system("cd #{tmpdir} && tar czvf #{tar_name} #{avd2.dir_name} #{avd2.ini_name}")
 
-      # create magic
+      # create magic (4 bytes)
       magic_name = "magic"
       magic_path = tmpdir_path + magic_name
       File.open(magic_path, "wb") {|f| f.write(["PPHS"].pack('a*'))}
 
-      # create screenshot_size
+      # create google play (1 byte)
+      google_play_name = "google_play"
+      google_play_path = tmpdir_path + google_play_name
+      File.open(google_play_path, "wb") {|f| f.write([avd2.google_play ? 1 : 0].pack('C'))}
+
+      # create google play (64 bytes)
+      android_version_name = "android_version"
+      android_version_path = tmpdir_path + android_version_name
+      File.open(android_version_path, "wb") {|f| f.write([avd2.android_version].pack('a64'))}
+
+      # create screenshot_size (4 bytes)
       screenshot_size_name = "screenshot_size"
       screenshot_size_path = tmpdir_path + screenshot_size_name
       File.open(screenshot_size_path, "wb") {|f| f.write([snap.screenshot.size].pack('I'))}
@@ -136,41 +155,7 @@ class Avd
       # binary
       binary_name = "#{avd2.name}.snapshot"
       binary_path = tmpdir_path + binary_name
-      system("cd #{tmpdir} && cat #{magic_name} #{screenshot_size_name} #{screenshot_name} #{tar_name} > #{binary_name}")
-      FileUtils.mv(binary_path, Dir.pwd)
-    end
-  end
-
-  def create_binary_saved(snapshot_name, output_filename)
-    Dir.mktmpdir do |tmpdir|
-      tmpdir_path = Pathname(tmpdir)
-      avd2 = dup(tmpdir_path)
-      avd2.delete_snapshot_unless(snapshot_name)
-      snap = avd2.find_snapshot_by_name(snapshot_name)
-
-      # create tar.gz
-      tar_name = "#{@name}.tar.gz"
-      tar_path = tmpdir_path + tar_name
-      break unless system("cd #{tmpdir} && tar czvf #{tar_name} #{@dir_name} #{@ini_name}")
-
-      # create magic
-      magic_name = "magic"
-      magic_path = tmpdir_path + magic_name
-      File.open(magic_path, "wb") {|f| f.write(["PPHS"].pack('a*'))}
-
-      # create screenshot_size
-      screenshot_size_name = "screenshot_size"
-      screenshot_size_path = tmpdir_path + screenshot_size_name
-      File.open(screenshot_size_path, "wb") {|f| f.write([snap.screenshot.size].pack('I'))}
-
-      # create screenshot
-      screenshot_name = "screenshot.png"
-      FileUtils.cp(snap.screenshot_path, tmpdir_path)
-
-      # binary
-      binary_name = "#{@name}.snapshot"
-      binary_path = tmpdir_path + binary_name
-      system("cd #{tmpdir} && cat #{magic_name} #{screenshot_size_name} #{screenshot_name} #{tar_name} > #{binary_name}")
+      system("cd #{tmpdir} && cat #{magic_name} #{google_play_name} #{android_version_name} #{screenshot_size_name} #{screenshot_name} #{tar_name} > #{binary_name}")
       FileUtils.mv(binary_path, Dir.pwd)
     end
   end
@@ -189,9 +174,12 @@ class Avd
         break
       end
 
+      # skip google_play(1) + android_version(64)
+      skip = binary_file.read(1 + 64)
+
       # skip screenshot.png, and then extract tar ball
       screenshot_size = binary_file.read(4).unpack('I')[0]
-      break unless system("dd if='#{binary_path}' of=#{tar_path} bs=#{screenshot_size+8} skip=1")
+      break unless system("dd if='#{binary_path}' of=#{tar_path} bs=#{4 + 1 + 64 + 4 + screenshot_size} skip=1")
       break unless system("cd #{tmpdir} && tar xzvf #{tar_name}")
 
       # check $HOME/.android/avd/AVD_NAME.avd exists

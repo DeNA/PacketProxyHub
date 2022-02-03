@@ -512,9 +512,9 @@ class ApiClient {
     }
 
     // Snapshot
-    public async createSnapshotAndRedux(dispatch:Dispatch<any>, orgId:string, projectId:string, configId:string, name:string, description:string, fileId:string, screenshotId:string) : Promise<Snapshot|undefined> {
+    public async createSnapshotAndRedux(dispatch:Dispatch<any>, orgId:string, projectId:string, configId:string, name:string, description:string, androidVersion:string, googlePlay:number, fileId:string, screenshotId:string) : Promise<Snapshot|undefined> {
         try {
-            const snapshotId = await this.createSnapshot(orgId, projectId, configId, name, description, fileId, screenshotId)
+            const snapshotId = await this.createSnapshot(orgId, projectId, configId, name, description, androidVersion, googlePlay, fileId, screenshotId)
             const newSnapshot: Snapshot = await this.fetchSnapshot(orgId, projectId, configId, snapshotId)
             let screenshot = await this.downloadFileAsBlob(orgId, screenshotId)
             screenshot = screenshot.slice(0, screenshot.size, "image/png")
@@ -526,9 +526,9 @@ class ApiClient {
             return undefined
         }
     }
-    public async createSnapshot(orgId:string, projectId:string, configId:string, name:string, description:string, fileId:string, screenshotId:string) : Promise<any> {
+    public async createSnapshot(orgId:string, projectId:string, configId:string, name:string, description:string, androidVersion:string, googlePlay:number, fileId:string, screenshotId:string) : Promise<any> {
         return (await this.callApi("POST", `/orgs/${orgId}/projects/${projectId}/configs/${configId}/snapshots/`, JSON.stringify({
-            name, description, fileId, screenshotId
+            name, description, androidVersion, googlePlay, fileId, screenshotId
         }))).json()
     }
     public async fetchSnapshotAndRedux(dispatch:Dispatch<any>, snapshot:Snapshot) : Promise<Snapshot|undefined> {

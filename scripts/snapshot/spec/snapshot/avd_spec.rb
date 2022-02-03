@@ -15,7 +15,7 @@ RSpec.describe 'Avd' do
     end
     it 'create snapshot' do
       avd = Avd.new('orig')
-      avd.create_binary("aaa", 'new')
+      avd.create_binary("hoge", 'new')
     end
     it 'extract snapshot' do
       Avd.delete('new')

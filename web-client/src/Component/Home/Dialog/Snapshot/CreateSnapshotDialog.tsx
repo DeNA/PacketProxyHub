@@ -85,13 +85,15 @@ const CreateSnapshotDialog : React.FC<Props> = ({ open, config, onCreateDone, on
             return
         }
         (async () => {
+            const androidVersion = await getSnapshotAndroidVersion(uploadFile)
+            const googlePlay = await getSnapshotGooglePlay(uploadFile)
             const snapshotId = await apiClient.uploadFile(config.orgId, await getSnapshotImage(uploadFile))
             const uploadId = await apiClient.multiUploadFile(config.orgId, uploadFile, (progress) => {
                 setLoadingText(Math.ceil(progress).toString(10) + "%")
             }, () => {
                 setLoadingText("Finalizing...")
             })
-            const snapshot: Snapshot | undefined = await apiClient.createSnapshotAndRedux(dispatch, config.orgId, config.projectId, config.id, name, description, uploadId, snapshotId)
+            const snapshot: Snapshot | undefined = await apiClient.createSnapshotAndRedux(dispatch, config.orgId, config.projectId, config.id, name, description, androidVersion, googlePlay, uploadId, snapshotId)
             if (snapshot !== undefined) {
                 onCreateDone && onCreateDone(snapshot)
             }
@@ -122,9 +124,17 @@ const CreateSnapshotDialog : React.FC<Props> = ({ open, config, onCreateDone, on
         return magicWord === "PPHS"
     }
 
+    const getSnapshotGooglePlay = async(file:File) : Promise<number> => {
+        return new Int8Array(await file.slice(4, 4 + 1).arrayBuffer())[0]
+    }
+
+    const getSnapshotAndroidVersion = async(file:File) : Promise<string> => {
+        return file.slice(4 + 1, 4 + 1 + 64).text()
+    }
+
     const getSnapshotImage = async(file:File) : Promise<Blob> => {
-        const screenshotSize = new Int32Array(await file.slice(4, 8).arrayBuffer())[0]
-        return file.slice(8, screenshotSize)
+        const screenshotSize = new Int32Array(await file.slice(4 + 1 + 64, 4 + 1 + 64 + 4).arrayBuffer())[0]
+        return file.slice(4 + 1 + 64 + 4, 4 + 1 + 64 + 4 + screenshotSize)
     }
 
     return ( <Dialog onClose={handleOnCancel} open={open} fullWidth={true} maxWidth={'sm'} > <DialogTitle>スナップショットのアップロード</DialogTitle>

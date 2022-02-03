@@ -30,6 +30,8 @@ public class DaoSnapshot {
     private DaoId id;
     private DaoName name;
     private String description;
+    private String androidVersion;
+    private long googlePlay;
     private DaoId fileId;
     private DaoId screenshotId;
     private DaoId uploadedBy;
@@ -52,6 +54,8 @@ public class DaoSnapshot {
         this.id = DaoId.create(snapshot.getId());
         this.name = DaoName.create(snapshot.getName());
         this.description = snapshot.getDescription();
+        this.androidVersion = snapshot.getAndroidVersion();
+        this.googlePlay = snapshot.getGooglePlay();
         this.fileId = DaoId.create(snapshot.getFileId());
         this.screenshotId = DaoId.create(snapshot.getScreenshotId());
         this.uploadedBy = DaoId.create(snapshot.getUploadedBy());
@@ -60,6 +64,6 @@ public class DaoSnapshot {
     }
 
     public Snapshot toSnapshot() {
-        return Snapshot.create(id.toId(), name.toName(), description, fileId.toId(), screenshotId.toId(), uploadedBy.toId(), uploadedAt);
+        return Snapshot.create(id.toId(), name.toName(), description, androidVersion, googlePlay, fileId.toId(), screenshotId.toId(), uploadedBy.toId(), uploadedAt);
     }
 }
