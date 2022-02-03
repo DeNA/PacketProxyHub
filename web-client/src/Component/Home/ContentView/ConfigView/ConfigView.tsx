@@ -77,7 +77,7 @@ const ConfigView: React.FC<Props> = ({org, project, config, tab}) => {
     const history = useHistory()
 
     useEffect(() => {
-        history.replace(`/${org.name}/${project.name}/${config.name}/${IndexToTabName(focusTab)}`)
+        history.replace(`/${encodeURIComponent(org.name)}/${encodeURIComponent(project.name)}/${encodeURIComponent(config.name)}/${IndexToTabName(focusTab)}`)
     }, [history, org, project, config, focusTab, tab])
 
     return (
