@@ -45,4 +45,28 @@ const Code : React.FC<Props> = ({value, mode, onChange}) => {
     )
 }
 
+interface CodeSnippetProps {
+    value: string
+    mode: string
+}
+
+export const CodeSnippet : React.FC<CodeSnippetProps> = ({value, mode}) => {
+    return (
+        <CodeMirror
+            editorDidMount={editor => {
+                editor.setSize("auto", "auto")
+                editor.isReadOnly()
+            }}
+            value={value}
+            options={{
+                theme: 'material',
+                mode: mode,
+                readOnly: true,
+                lineWrapping: false,
+            }}
+            onBeforeChange={() => {}}
+        />
+    )
+}
+
 export default Code

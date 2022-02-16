@@ -34,19 +34,18 @@ import 'easymde/dist/easymde.min.css';
 import {Alert} from "@material-ui/lab";
 import ApiClient from "../../../../../Common/ApiClient";
 import CreateSnapshotDialog from "../../../Dialog/Snapshot/CreateSnapshotDialog";
-import {Add, Android, Delete, Edit} from "@material-ui/icons";
-import IconText from "../../../../../Common/IconText";
-import {blue, green} from "@material-ui/core/colors";
+import {Add, Delete, Edit, Help} from "@material-ui/icons";
+import {blue, green, grey} from "@material-ui/core/colors";
 import AccountName from "../../../../../Common/AccountName";
 import PHDate from "../../../../../Common/PHDate";
 import {useHistory} from "react-router-dom";
 import DeleteSnapshotConfirmDialog from "../../../Dialog/Snapshot/DeleteSnapshotConfirmDialog";
-import {Apple, DeviceUnknown, Download} from "@mui/icons-material";
-import {red} from "@mui/material/colors";
+import {Download} from "@mui/icons-material";
 import EditSnapshotDialog from "../../../Dialog/Snapshot/EditSnapshotDialog";
 import Preview from "../../../../../Common/Preview"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faGooglePlay } from "@fortawesome/free-brands-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faGooglePlay} from "@fortawesome/free-brands-svg-icons"
+import SnapshotHelpDialog from "./SnapshotHelpDialog";
 
 interface Props {
     config: Config
@@ -63,6 +62,15 @@ const TabSnapshotView : React.FC<Props> = ({config}) => {
     const [openDeleteDlgState, setOpenDeleteDlgState] = useState(false)
     const [editSnapshot, setEditSnapshot] = useState<Snapshot>(initialSnapshot)
     const [openEditDlgState, setOpenEditDlgState] = useState(false)
+
+    const [openHelp, setOpenHelp] = useState(false)
+
+    const handleClickHelp = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setOpenHelp(true)
+    }
+    const handleOnCloseHelp = () => {
+        setOpenHelp(false)
+    }
 
     const history = useHistory()
 
@@ -87,53 +95,58 @@ const TabSnapshotView : React.FC<Props> = ({config}) => {
     }, [openEditDlgState])
 
     return (
-        <div style={{width:"90%",margin:"0 auto",marginTop:"2em"}}>
+        <div style={{width: "90%", margin: "0 auto", marginTop: "2em"}}>
             <div>
-                <Button variant="outlined" size="small" color="primary" startIcon={<Add />} onClick={() => setOpenDlgState(true)} >
+                <Button variant="outlined" size="small" color="primary" startIcon={<Add/>}
+                        onClick={() => setOpenDlgState(true)}>
                     新規アップロード
                 </Button>
+                <Button variant="contained" size="small" startIcon={<Help/>} style={{marginLeft:"1em",backgroundColor:grey[200]}} onClick={handleClickHelp}>使い方</Button>
             </div>
-            <div style={{margin:"1em 0"}}>
-                <TableContainer component={Paper} style={{backgroundColor:"#FFFFFF"}} >
+            <div style={{margin: "1em 0"}}>
+                <TableContainer component={Paper} style={{backgroundColor: "#FFFFFF"}}>
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell style={{fontWeight:"bold"}} align="center" width="100px">Screenshot</TableCell>
-                                <TableCell style={{fontWeight:"bold"}}>ファイル名</TableCell>
-                                <TableCell style={{fontWeight:"bold"}} width="auto">概要</TableCell>
-                                <TableCell style={{fontWeight:"bold"}} align="center">Android Version</TableCell>
-                                <TableCell style={{fontWeight:"bold"}} align="center">GooglePlay有無</TableCell>
-                                <TableCell style={{fontWeight:"bold"}} align="center">アップロード者</TableCell>
-                                <TableCell style={{fontWeight:"bold"}} align="center">アップロード時刻</TableCell>
-                                <TableCell style={{fontWeight:"bold"}} align="center" width="20px">Download</TableCell>
-                                <TableCell style={{fontWeight:"bold"}} align="center" width="20px">編集</TableCell>
-                                <TableCell style={{fontWeight:"bold"}} align="center" width="20px">削除</TableCell>
+                                <TableCell style={{fontWeight: "bold"}} align="center"
+                                           width="100px">Screenshot</TableCell>
+                                <TableCell style={{fontWeight: "bold"}}>ファイル名</TableCell>
+                                <TableCell style={{fontWeight: "bold"}} width="auto">概要</TableCell>
+                                <TableCell style={{fontWeight: "bold"}} align="center">Android Version</TableCell>
+                                <TableCell style={{fontWeight: "bold"}} align="center">GooglePlay有無</TableCell>
+                                <TableCell style={{fontWeight: "bold"}} align="center">アップロード者</TableCell>
+                                <TableCell style={{fontWeight: "bold"}} align="center">アップロード時刻</TableCell>
+                                <TableCell style={{fontWeight: "bold"}} align="center" width="20px">Download</TableCell>
+                                <TableCell style={{fontWeight: "bold"}} align="center" width="20px">編集</TableCell>
+                                <TableCell style={{fontWeight: "bold"}} align="center" width="20px">削除</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            { snapshots.sort((a:Snapshot, b:Snapshot) => { return a!.uploadedAt! - b!.uploadedAt! }).map((snapshot) => {
+                            {snapshots.sort((a: Snapshot, b: Snapshot) => {
+                                return a!.uploadedAt! - b!.uploadedAt!
+                            }).map((snapshot) => {
                                 return <TableRow key={snapshot.id}>
                                     <TableCell align="center">
-                                        { snapshot.resizedScreenshot &&
-                                            <Preview resizedFile={snapshot.resizedScreenshot} />
+                                        {snapshot.resizedScreenshot &&
+                                            <Preview resizedFile={snapshot.resizedScreenshot}/>
                                         }
                                     </TableCell>
                                     <TableCell>
-                                        <Link href="#" color="inherit" onClick={() => handleOnDownload(snapshot)} >
+                                        <Link href="#" color="inherit" onClick={() => handleOnDownload(snapshot)}>
                                             {snapshot.name}
                                         </Link>
                                     </TableCell>
                                     <TableCell width="auto">
-                                        { snapshot.description }
+                                        {snapshot.description}
                                     </TableCell>
                                     <TableCell align="center">
-                                        { snapshot.androidVersion }
+                                        {snapshot.androidVersion}
                                     </TableCell>
                                     <TableCell align="center">
-                                        { snapshot.googlePlay === 1 && <FontAwesomeIcon icon={faGooglePlay} />}
+                                        {snapshot.googlePlay === 1 && <FontAwesomeIcon icon={faGooglePlay}/>}
                                     </TableCell>
                                     <TableCell align="center">
-                                        <AccountName accountId={snapshot.uploadedBy} />
+                                        <AccountName accountId={snapshot.uploadedBy}/>
                                     </TableCell>
                                     <TableCell align="center">
                                         {
@@ -141,8 +154,8 @@ const TabSnapshotView : React.FC<Props> = ({config}) => {
                                         }
                                     </TableCell>
                                     <TableCell align="center" width="20px">
-                                        <IconButton onClick={() => handleOnDownload(snapshot)} >
-                                            <Download style={{color:green[600]}}/>
+                                        <IconButton onClick={() => handleOnDownload(snapshot)}>
+                                            <Download style={{color: green[600]}}/>
                                         </IconButton>
                                     </TableCell>
                                     <TableCell align="center" width="20px">
@@ -152,7 +165,7 @@ const TabSnapshotView : React.FC<Props> = ({config}) => {
                                                 setOpenEditDlgState(true)
                                             }}
                                         >
-                                            <Edit style={{color:blue[600]}}/>
+                                            <Edit style={{color: blue[600]}}/>
                                         </IconButton>
                                     </TableCell>
                                     <TableCell align="center" width="20px">
@@ -171,15 +184,22 @@ const TabSnapshotView : React.FC<Props> = ({config}) => {
                     </Table>
                 </TableContainer>
             </div>
-            <Snackbar anchorOrigin={{vertical:"top",horizontal:"center"}} open={openState} autoHideDuration={2000} onClose={() => {setOpenState(false)}}>
-                <Alert onClose={() => {setOpenState(false)}} severity="success">
+            <Snackbar anchorOrigin={{vertical: "top", horizontal: "center"}} open={openState} autoHideDuration={2000}
+                      onClose={() => {
+                          setOpenState(false)
+                      }}>
+                <Alert onClose={() => {
+                    setOpenState(false)
+                }} severity="success">
                     保存しました
                 </Alert>
             </Snackbar>
             <CreateSnapshotDialog
                 config={config}
                 open={openDlgState}
-                onClose={() => {setOpenDlgState(false)}}
+                onClose={() => {
+                    setOpenDlgState(false)
+                }}
             />
             <EditSnapshotDialog
                 open={openEditDlgState}
@@ -197,6 +217,7 @@ const TabSnapshotView : React.FC<Props> = ({config}) => {
                 }}
                 onClose={() => setOpenDeleteDlgState(false)}
             />
+            <SnapshotHelpDialog open={openHelp} onClose={handleOnCloseHelp}/>
         </div>
     )
 }
