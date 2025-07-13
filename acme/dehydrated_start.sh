@@ -9,5 +9,5 @@ export ACME_DOMAIN=packetproxyhub.example.com
 export ACME_CA=https://acme-v02.api.letsencrypt.org/directory
 
 cd $SCRIPT_DIR
-exec ./dehydrated -c -f config -d ${ACME_DOMAIN} -x
+exec ./dehydrated -c -f config -d ${ACME_DOMAIN}
 
