@@ -37,3 +37,5 @@ dena
 /gradle
 /gradlew
 /gradlew.bat
+/etc_packetproxyhub/*
+!/etc_packetproxyhub/.keep

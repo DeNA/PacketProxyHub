@@ -28,3 +28,5 @@ yarn-error.log*
 dena
 /Dockerfile
 /yarn.lock
+/etc_nginx_certs/*
+!/etc_nginx_certs/.keep

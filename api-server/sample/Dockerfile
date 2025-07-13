@@ -23,11 +23,6 @@ RUN tar xf app/build/distributions/app.tar -C app/build/distributions
 
 FROM gcr.io/distroless/java:11
 
-## For SAML login
-# COPY path/to/okta.pem /etc/packetproxyhub/okta.pem
-COPY path/to/certs.p12 /etc/packetproxyhub/certs.p12
-COPY packetproxyhub.properties /etc/packetproxyhub/packetproxyhub.properties
-
 WORKDIR /usr/local
 COPY --from=build-stage /root/app/build/distributions/app /usr/local/
 

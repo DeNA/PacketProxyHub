@@ -1,0 +1,12 @@
+/accounts/*
+!/accounts/.keep
+
+/certs/*
+!/certs/.keep
+
+/www_root/.well-known/acme-challenge/*
+!/www_root/.well-known/acme-challenge/.keep
+
+/chains
+/domains.txt
+/config
