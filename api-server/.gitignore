@@ -33,9 +33,9 @@ build
 .DS_Store
 
 dena
-/Dockerfile
 /gradle
 /gradlew
 /gradlew.bat
 /etc_packetproxyhub/*
 !/etc_packetproxyhub/.keep
+!/etc_packetproxyhub/packetproxyhub.properties

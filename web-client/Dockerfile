@@ -10,7 +10,7 @@ FROM nginx as production-stage
 ENV LANG C.UTF-8
 RUN ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
-COPY sample/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --from=build-stage /root/build /usr/share/nginx/html
 
 EXPOSE 443
