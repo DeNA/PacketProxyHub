@@ -1,4 +1,4 @@
-FROM node as build-stage
+FROM node:16-bullseye as build-stage
 
 WORKDIR /root
 COPY . .

@@ -1,4 +1,4 @@
-FROM debian:buster as build-stage
+FROM debian:bullseye as build-stage
 
 RUN apt-get update && \
     apt-get upgrade -y --no-install-recommends && \
@@ -9,7 +9,7 @@ ENV LANG ja_JP.UTF-8
 RUN curl -k -O "https://corretto.aws/downloads/resources/11.0.10.9.1/java-11-amazon-corretto-jdk_11.0.10.9-1_amd64.deb"
 RUN dpkg -i "java-11-amazon-corretto-jdk_11.0.10.9-1_amd64.deb"
 
-RUN curl -k -O "https://downloads.gradle-dn.com/distributions/gradle-6.7.1-bin.zip" && \
+RUN curl -k -O "https://downloads.gradle.org/distributions/gradle-6.7.1-bin.zip" && \
     unzip gradle-6.7.1-bin.zip && \
     mv gradle-6.7.1/bin/* /usr/bin && \
     mv gradle-6.7.1/lib/* /usr/lib
